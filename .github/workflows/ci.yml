@@ -1,0 +1,145 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  # Runs on every push/PR — informational for deploy-fast, and required by
+  # deploy-full via `needs`.
+  biome:
+    name: Biome (lint + format)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - uses: biomejs/setup-biome@v2
+        with:
+          version: 2.6.6
+      - run: biome ci --reporter=github .
+        working-directory: website
+
+  typecheck:
+    name: astro check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.4
+      - uses: actions/cache@v6
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
+          restore-keys: ${{ runner.os }}-bun-
+      - run: bun install --frozen-lockfile
+      - run: bun --cwd website check
+
+  # TinaCloud always commits saves with this exact message. No `needs` — starts
+  # immediately, skips biome/typecheck entirely, builds with build:fast (no
+  # astro check, no Tina cloud check/indexing). This is the CMS-save path.
+  deploy-fast:
+    name: Deploy (fast — CMS save)
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && startsWith(github.event.head_commit.message, 'TinaCMS content update')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: deploy-production
+      # A newer save supersedes an older one mid-flight — don't queue every
+      # CMS edit serially behind whatever's already running.
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.4
+      - uses: actions/cache@v6
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
+          restore-keys: ${{ runner.os }}-bun-
+      - uses: actions/cache@v6
+        with:
+          path: .sst
+          key: ${{ runner.os }}-sst-${{ hashFiles('bun.lock', 'sst.config.ts') }}
+          restore-keys: ${{ runner.os }}-sst-
+      - run: bun install --frozen-lockfile
+      # The Tina /admin bundle only needs rebuilding when the schema
+      # (tina/config.ts) changes — a content save never touches it. Skipping
+      # the rebuild is the single biggest chunk of build:fast's time.
+      - uses: actions/cache@v6
+        id: admin-cache
+        with:
+          path: website/public/admin
+          key: ${{ runner.os }}-tina-admin-${{ hashFiles('website/tina/config.ts') }}
+      - name: Build Tina admin
+        if: steps.admin-cache.outputs.cache-hit != 'true'
+        run: bun --cwd website tina:build
+        env:
+          NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
+          TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
+      - name: Build site
+        run: bun --cwd website build:site
+      - run: test -f website/dist/server/entry.mjs
+      - name: Deploy to Cloudflare
+        run: bunx sst deploy --stage production
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_DEFAULT_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_DEFAULT_ACCOUNT_ID }}
+
+  # Everything that reaches main NOT via a TinaCMS save — pushes from VS Code,
+  # merged PRs, workflow_dispatch. Gated on biome + astro check actually
+  # passing before anything ships. Same fast build script (astro check already
+  # ran as its own job, no need to pay for it twice), same deploy target —
+  # `deploy-production` concurrency means this and deploy-fast can never run
+  # at once; whichever fires later wins.
+  deploy-full:
+    name: Deploy (full checks — code push)
+    needs: [biome, typecheck]
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && !(github.event_name == 'push' && startsWith(github.event.head_commit.message, 'TinaCMS content update'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.4
+      - uses: actions/cache@v6
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
+          restore-keys: ${{ runner.os }}-bun-
+      - uses: actions/cache@v6
+        with:
+          path: .sst
+          key: ${{ runner.os }}-sst-${{ hashFiles('bun.lock', 'sst.config.ts') }}
+          restore-keys: ${{ runner.os }}-sst-
+      - run: bun install --frozen-lockfile
+      - uses: actions/cache@v6
+        id: admin-cache
+        with:
+          path: website/public/admin
+          key: ${{ runner.os }}-tina-admin-${{ hashFiles('website/tina/config.ts') }}
+      - name: Build Tina admin
+        if: steps.admin-cache.outputs.cache-hit != 'true'
+        run: bun --cwd website tina:build
+        env:
+          NEXT_PUBLIC_TINA_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_TINA_CLIENT_ID }}
+          TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
+      - name: Build site
+        run: bun --cwd website build:site
+      - run: test -f website/dist/server/entry.mjs
+      - name: Deploy to Cloudflare
+        run: bunx sst deploy --stage production
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_DEFAULT_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_DEFAULT_ACCOUNT_ID }}

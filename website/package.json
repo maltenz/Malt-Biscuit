@@ -1,0 +1,46 @@
+{
+  "name": "@maltbiscuit/website",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "check": "astro check",
+    "build": "tinacms build && astro check && astro build",
+    "build:ci": "tinacms build --skip-cloud-checks && astro check && astro build",
+    "build:fast": "tinacms build --skip-cloud-checks --skip-indexing && astro build",
+    "tina:build": "tinacms build --skip-cloud-checks --skip-indexing",
+    "build:site": "astro build",
+    "preview": "astro preview",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "ci": "biome ci .",
+    "format": "biome format --write .",
+    "format:check": "biome check .",
+    "tina": "tinacms dev -c \"astro dev\""
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@astrojs/cloudflare": "^14.4.6",
+    "@astrojs/react": "^7.1.4",
+    "@emotion/cache": "^11.14.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^9.5.0",
+    "@mui/material": "^9.5.0",
+    "@tinacms/cli": "^4.0.4",
+    "astro": "^7.4.7",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "tinacms": "^3.15.1",
+    "tss-react": "^4.9.21"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.6.6",
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "sst": "^4.17.2",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.158.0"
+  }
+}
