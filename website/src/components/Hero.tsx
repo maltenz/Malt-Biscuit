@@ -80,7 +80,31 @@ const Section = styled('section')(({ theme }) => ({
   [theme.breakpoints.down('sm')]: {
     padding: `${theme.spacing(10)} ${theme.spacing(2)} calc(var(--hero-overlap) + ${theme.spacing(6)})`,
   },
+  // Subpages: a short band, just tall enough for the nav and the title.
+  '&.compact': {
+    minHeight: 0,
+    padding: `calc(104px + ${theme.spacing(4)}) ${theme.spacing(3)} calc(var(--hero-overlap) + ${theme.spacing(5)})`,
+    [theme.breakpoints.down('sm')]: {
+      padding: `calc(96px + ${theme.spacing(2)}) ${theme.spacing(2)} calc(var(--hero-overlap) + ${theme.spacing(4)})`,
+    },
+  },
 }));
+
+/** Subpage title: pink, black outline and hard shadow, like the nav's Contact link. */
+const PageTitle = styled('h1')({
+  margin: 0,
+  color: '#ff35b3',
+  fontFamily: 'inherit',
+  fontSize: 'clamp(2.5rem, 7vw, 5rem)',
+  fontWeight: 900,
+  lineHeight: 1.05,
+  letterSpacing: '-0.01em',
+  textAlign: 'center',
+  textWrap: 'balance',
+  WebkitTextStroke: 'clamp(2px, 0.35vw, 4px) #000',
+  paintOrder: 'stroke fill',
+  textShadow: 'clamp(4px, 0.6vw, 7px) clamp(4px, 0.6vw, 7px) 0 #000',
+});
 
 /** Record grooves: faint darker rings on lemon. Needs --lemon and --groove (set on Group). */
 const GROOVES = `repeating-radial-gradient(circle,
@@ -326,7 +350,8 @@ export interface HeroProps {
   secondaryAction?: Action | null;
   /**
    * The profile photo beside the record, and the video/track on its back.
-   * On by default (home page); subpages turn it off for just the record.
+   * On by default (home page). Off on subpages, which get a short band with
+   * just the title (no record).
    */
   profile?: boolean;
 }
@@ -376,6 +401,15 @@ function HeroSection({
       video.currentTime = 0;
     }
   }, [flipped]);
+
+  // Subpages: no record, just the title over a short zebra band.
+  if (!profile) {
+    return (
+      <Section className="compact">
+        <PageTitle>{title}</PageTitle>
+      </Section>
+    );
+  }
 
   return (
     <Section>
