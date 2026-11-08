@@ -459,6 +459,11 @@ export type PageConnection = Connection & {
   edges?: Maybe<Array<Maybe<PageConnectionEdges>>>;
 };
 
+export type SettingsContact = {
+  __typename?: 'SettingsContact';
+  phone?: Maybe<Scalars['String']['output']>;
+};
+
 export type SettingsFooterCta = {
   __typename?: 'SettingsFooterCta';
   label?: Maybe<Scalars['String']['output']>;
@@ -502,10 +507,15 @@ export type SettingsFooter = {
 
 export type Settings = Node & Document & {
   __typename?: 'Settings';
+  contact?: Maybe<SettingsContact>;
   footer?: Maybe<SettingsFooter>;
   id: Scalars['ID']['output'];
   _sys: SystemInfo;
   _values: Scalars['JSON']['output'];
+};
+
+export type SettingsContactFilter = {
+  phone?: InputMaybe<StringFilter>;
 };
 
 export type SettingsFooterCtaFilter = {
@@ -544,6 +554,7 @@ export type SettingsFooterFilter = {
 };
 
 export type SettingsFilter = {
+  contact?: InputMaybe<SettingsContactFilter>;
   footer?: InputMaybe<SettingsFooterFilter>;
 };
 
@@ -754,6 +765,10 @@ export type PageMutation = {
   body?: InputMaybe<Scalars['RichText']['input']>;
 };
 
+export type SettingsContactMutation = {
+  phone?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type SettingsFooterCtaMutation = {
   label?: InputMaybe<Scalars['String']['input']>;
   href?: InputMaybe<Scalars['String']['input']>;
@@ -790,6 +805,7 @@ export type SettingsFooterMutation = {
 };
 
 export type SettingsMutation = {
+  contact?: InputMaybe<SettingsContactMutation>;
   footer?: InputMaybe<SettingsFooterMutation>;
 };
 
@@ -926,6 +942,10 @@ export type PageFilter = {
   body?: RichTextFilter | null | undefined;
 };
 
+export type SettingsContactFilter = {
+  phone?: StringFilter | null | undefined;
+};
+
 export type SettingsFooterCtaFilter = {
   label?: StringFilter | null | undefined;
   href?: StringFilter | null | undefined;
@@ -962,6 +982,7 @@ export type SettingsFooterFilter = {
 };
 
 export type SettingsFilter = {
+  contact?: SettingsContactFilter | null | undefined;
   footer?: SettingsFooterFilter | null | undefined;
 };
 
@@ -971,7 +992,7 @@ export type PagePartsFragment = { __typename: 'Page', title: string, description
     | { __typename: 'PageSectionsSponsors', anchor: string | null, heading: string, sponsors: Array<{ __typename: 'PageSectionsSponsorsSponsors', name: string, logo: string | null, url: string | null } | null> | null }
    | null> | null };
 
-export type SettingsPartsFragment = { __typename: 'Settings', footer: { __typename: 'SettingsFooter', tagline: string | null, cta: { __typename: 'SettingsFooterCta', label: string | null, href: string | null } | null, instagram: { __typename: 'SettingsFooterInstagram', handle: string | null, href: string | null } | null, links: Array<{ __typename: 'SettingsFooterLinks', label: string | null, href: string | null } | null> | null, about: { __typename: 'SettingsFooterAbout', logo: string | null, heading: string | null, text: string | null, link: { __typename: 'SettingsFooterAboutLink', label: string | null, href: string | null } | null } | null } | null };
+export type SettingsPartsFragment = { __typename: 'Settings', contact: { __typename: 'SettingsContact', phone: string | null } | null, footer: { __typename: 'SettingsFooter', tagline: string | null, cta: { __typename: 'SettingsFooterCta', label: string | null, href: string | null } | null, instagram: { __typename: 'SettingsFooterInstagram', handle: string | null, href: string | null } | null, links: Array<{ __typename: 'SettingsFooterLinks', label: string | null, href: string | null } | null> | null, about: { __typename: 'SettingsFooterAbout', logo: string | null, heading: string | null, text: string | null, link: { __typename: 'SettingsFooterAboutLink', label: string | null, href: string | null } | null } | null } | null };
 
 export type PageQueryVariables = Exact<{
   relativePath: string;
@@ -1005,7 +1026,7 @@ export type SettingsQueryVariables = Exact<{
 }>;
 
 
-export type SettingsQuery = { settings: { __typename: 'Settings', id: string, _sys: { filename: string, basename: string, hasReferences: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, footer: { __typename: 'SettingsFooter', tagline: string | null, cta: { __typename: 'SettingsFooterCta', label: string | null, href: string | null } | null, instagram: { __typename: 'SettingsFooterInstagram', handle: string | null, href: string | null } | null, links: Array<{ __typename: 'SettingsFooterLinks', label: string | null, href: string | null } | null> | null, about: { __typename: 'SettingsFooterAbout', logo: string | null, heading: string | null, text: string | null, link: { __typename: 'SettingsFooterAboutLink', label: string | null, href: string | null } | null } | null } | null } };
+export type SettingsQuery = { settings: { __typename: 'Settings', id: string, _sys: { filename: string, basename: string, hasReferences: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, contact: { __typename: 'SettingsContact', phone: string | null } | null, footer: { __typename: 'SettingsFooter', tagline: string | null, cta: { __typename: 'SettingsFooterCta', label: string | null, href: string | null } | null, instagram: { __typename: 'SettingsFooterInstagram', handle: string | null, href: string | null } | null, links: Array<{ __typename: 'SettingsFooterLinks', label: string | null, href: string | null } | null> | null, about: { __typename: 'SettingsFooterAbout', logo: string | null, heading: string | null, text: string | null, link: { __typename: 'SettingsFooterAboutLink', label: string | null, href: string | null } | null } | null } | null } };
 
 export type SettingsConnectionQueryVariables = Exact<{
   before?: string | null | undefined;
@@ -1017,7 +1038,7 @@ export type SettingsConnectionQueryVariables = Exact<{
 }>;
 
 
-export type SettingsConnectionQuery = { settingsConnection: { totalCount: number, pageInfo: { hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges: Array<{ cursor: string, node: { __typename: 'Settings', id: string, _sys: { filename: string, basename: string, hasReferences: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, footer: { __typename: 'SettingsFooter', tagline: string | null, cta: { __typename: 'SettingsFooterCta', label: string | null, href: string | null } | null, instagram: { __typename: 'SettingsFooterInstagram', handle: string | null, href: string | null } | null, links: Array<{ __typename: 'SettingsFooterLinks', label: string | null, href: string | null } | null> | null, about: { __typename: 'SettingsFooterAbout', logo: string | null, heading: string | null, text: string | null, link: { __typename: 'SettingsFooterAboutLink', label: string | null, href: string | null } | null } | null } | null } | null } | null> | null } };
+export type SettingsConnectionQuery = { settingsConnection: { totalCount: number, pageInfo: { hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges: Array<{ cursor: string, node: { __typename: 'Settings', id: string, _sys: { filename: string, basename: string, hasReferences: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, contact: { __typename: 'SettingsContact', phone: string | null } | null, footer: { __typename: 'SettingsFooter', tagline: string | null, cta: { __typename: 'SettingsFooterCta', label: string | null, href: string | null } | null, instagram: { __typename: 'SettingsFooterInstagram', handle: string | null, href: string | null } | null, links: Array<{ __typename: 'SettingsFooterLinks', label: string | null, href: string | null } | null> | null, about: { __typename: 'SettingsFooterAbout', logo: string | null, heading: string | null, text: string | null, link: { __typename: 'SettingsFooterAboutLink', label: string | null, href: string | null } | null } | null } | null } | null } | null> | null } };
 
 export const PagePartsFragmentDoc = gql`
     fragment PageParts on Page {
@@ -1118,6 +1139,10 @@ export const PagePartsFragmentDoc = gql`
 export const SettingsPartsFragmentDoc = gql`
     fragment SettingsParts on Settings {
   __typename
+  contact {
+    __typename
+    phone
+  }
   footer {
     __typename
     tagline

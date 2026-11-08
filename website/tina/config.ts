@@ -350,6 +350,21 @@ export default defineConfig({
         fields: [
           {
             type: 'object',
+            name: 'contact',
+            label: 'Contact',
+            description:
+              'Shown in the Contact popup with the Instagram link (Footer → Instagram). Leave the phone empty to hide it.',
+            fields: [
+              {
+                type: 'string',
+                name: 'phone',
+                label: 'Phone number',
+                description: 'e.g. 021 123 4567',
+              },
+            ],
+          },
+          {
+            type: 'object',
             name: 'footer',
             label: 'Footer',
             fields: [
@@ -382,7 +397,12 @@ export default defineConfig({
                 ui: { itemProps: (item: { label?: string }) => ({ label: item?.label }) },
                 fields: [
                   { type: 'string', name: 'label', label: 'Label' },
-                  { type: 'string', name: 'href', label: 'Link', description: 'A page (/privacy) or a web address.' },
+                  {
+                    type: 'string',
+                    name: 'href',
+                    label: 'Link',
+                    description: 'A page (/privacy) or a web address.',
+                  },
                 ],
               },
               {

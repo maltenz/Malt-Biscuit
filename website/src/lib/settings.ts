@@ -8,6 +8,8 @@ export interface Link {
 }
 
 export interface SiteSettings {
+  /** Direct contact details for the Contact dialog. */
+  contact?: { phone?: string };
   footer?: {
     tagline?: string;
     cta?: Link;

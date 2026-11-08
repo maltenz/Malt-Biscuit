@@ -29,8 +29,11 @@
       },
       {
         "label": "Contact",
-        "href": "/contact"
+        "href": "/#contact"
       }
     ]
+  },
+  "contact": {
+    "phone": "0211 44 26 21"
   }
 }
