@@ -1,6 +1,6 @@
 ---
 title: Malt Biscuit
-description: Melodic House DJ based in Hawkes Bay.
+description: Melodic House DJ based in Hawkes Bay
 hero:
   primaryAction:
     label: Book Now
