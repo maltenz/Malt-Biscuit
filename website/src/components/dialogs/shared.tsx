@@ -5,6 +5,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
+import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import { type ReactNode, useEffect, useState } from 'react';
 
@@ -148,6 +149,23 @@ export function SentMessage({
         </Button>
       </DialogActions>
     </>
+  );
+}
+
+/**
+ * Collection notice for the forms (Privacy Act 2020, principle 3): what the
+ * details are for, with a link to the policy. Opens in a new tab so the form
+ * isn't lost.
+ */
+export function PrivacyNote() {
+  return (
+    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+      We'll only use your details to reply and to plan your event. See our{' '}
+      <Link href="/privacy" target="_blank" rel="noopener" sx={{ color: 'inherit' }}>
+        Privacy Policy
+      </Link>
+      .
+    </Typography>
   );
 }
 

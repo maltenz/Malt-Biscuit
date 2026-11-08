@@ -1,10 +1,13 @@
 ---
 import BrandPalette from '../components/BrandPalette';
+import Hero from '../components/Hero';
+import PagePanel from '../components/PagePanel.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getPage } from '../lib/content';
 
 // Title, description, usage notes and documentation come from Tina
 // (content/pages/brand.md); colour values come from the MUI theme.
+// Same full-page hero as the home page, then the palette and docs in a panel.
 const page = getPage('brand');
 if (!page) {
   throw new Error('Missing content/pages/brand.md');
@@ -12,38 +15,20 @@ if (!page) {
 const { title, description, swatchNotes, Content } = page;
 ---
 
-<BaseLayout title={`${title} · maltbiscuit`} description={description}>
+<BaseLayout title={`${title} · Malt Biscuit`} description={description} overlayNav>
   <main>
-    <header>
-      <h1>{title}</h1>
-      <p class="lede">{description}</p>
-    </header>
+    <Hero title={title} description={description} profile={false} />
+    <PagePanel>
+      <BrandPalette notes={swatchNotes} client:load />
 
-    <BrandPalette notes={swatchNotes} client:load />
-
-    <article class="docs prose">
-      <Content />
-    </article>
+      <article class="docs prose">
+        <Content />
+      </article>
+    </PagePanel>
   </main>
 </BaseLayout>
 
 <style>
-  main {
-    max-width: 1120px;
-    margin: 0 auto;
-    padding: 2rem 1.5rem 5rem;
-  }
-  h1 {
-    margin: 0;
-    font-size: clamp(2rem, 5vw, 3rem);
-    letter-spacing: -0.02em;
-  }
-  .lede {
-    margin: 0.5rem 0 2rem;
-    color: #525252;
-    font-size: 1.125rem;
-  }
-
   .docs {
     max-width: 720px;
     margin-top: 4rem;

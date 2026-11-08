@@ -12,6 +12,7 @@ import {
   errorMessage,
   FormActions,
   Honeypot,
+  PrivacyNote,
   postForm,
   SentMessage,
   SiteDialog,
@@ -108,6 +109,7 @@ function ContactForm({ onClose }: { onClose: () => void }) {
           />
           <TextField name="message" label="Message" multiline minRows={4} required fullWidth />
           <Honeypot />
+          <PrivacyNote />
           {status.kind === 'error' && <Alert severity="error">{status.message}</Alert>}
         </Stack>
       </DialogContent>

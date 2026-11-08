@@ -1,9 +1,12 @@
 ---
+import Hero from '../components/Hero';
+import PagePanel from '../components/PagePanel.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getPages, type Page } from '../lib/content';
 
 // Plain text pages (privacy, terms, …): any Tina page without its own route.
-// Title, description and the markdown body come from content/pages/<slug>.md.
+// Same full-page hero as the home page (the record shows the title and
+// description), then the markdown body in a white panel.
 export const prerender = true;
 
 export function getStaticPaths() {
@@ -19,33 +22,20 @@ const { page } = Astro.props as { page: Page };
 const { title, description, Content } = page;
 ---
 
-<BaseLayout title={`${title} · Malt Biscuit`} description={description}>
+<BaseLayout title={`${title} · Malt Biscuit`} description={description} overlayNav>
   <main>
-    <header>
-      <h1>{title}</h1>
-      <p class="lede">{description}</p>
-    </header>
-    <article class="prose">
-      <Content />
-    </article>
+    <Hero title={title} description={description} profile={false} />
+    <PagePanel>
+      <div class="prose">
+        <Content />
+      </div>
+    </PagePanel>
   </main>
 </BaseLayout>
 
 <style>
-  main {
+  .prose {
     max-width: 720px;
-    margin: 0 auto;
-    padding: 3rem 1.5rem 5rem;
-  }
-  h1 {
-    margin: 0;
-    font-size: clamp(2rem, 5vw, 3rem);
-    font-weight: 800;
-    letter-spacing: -0.02em;
-  }
-  .lede {
-    margin: 0.75rem 0 2.5rem;
-    color: #525252;
-    font-size: 1.125rem;
+    margin-inline: auto;
   }
 </style>

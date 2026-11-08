@@ -6,13 +6,24 @@
 
 declare module "sst" {
   export interface Resource {
+    "BookingFrom": {
+      "type": "sst.sst.Secret"
+      "value": string
+    }
+    "BookingTo": {
+      "type": "sst.sst.Secret"
+      "value": string
+    }
     "Maltbiscuit": {
       "type": "sst.cloudflare.Worker"
       "url": string
     }
+    "ResendApiKey": {
+      "type": "sst.sst.Secret"
+      "value": string
+    }
   }
 }
-/// <reference path="sst-env.d.ts" />
 
 import "sst"
 export {}

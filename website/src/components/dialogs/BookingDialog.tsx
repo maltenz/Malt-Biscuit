@@ -15,6 +15,7 @@ import {
   errorMessage,
   FormActions,
   Honeypot,
+  PrivacyNote,
   postForm,
   SentMessage,
   SiteDialog,
@@ -113,6 +114,7 @@ function BookingForm({ onClose }: { onClose: () => void }) {
             fullWidth
           />
           <Honeypot />
+          <PrivacyNote />
           {status.kind === 'error' && <Alert severity="error">{status.message}</Alert>}
         </Stack>
       </DialogContent>

@@ -34,6 +34,8 @@ const { raw, w, h, r } = SOURCES[variant];
 const inner = raw
   .replace(/^[\s\S]*?<svg[^>]*>/, '')
   .replace(/<\/svg>\s*$/, '')
+  // The file's <title> is for the standalone SVG; inline it'd show as a tooltip.
+  .replace(/<title>[\s\S]*?<\/title>/, '')
   .replaceAll('"black"', '"currentColor"');
 ---
 

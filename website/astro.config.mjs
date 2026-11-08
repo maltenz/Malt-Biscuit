@@ -1,6 +1,20 @@
+import { rm } from 'node:fs/promises';
+
 import cloudflare from '@astrojs/cloudflare';
 import react from '@astrojs/react';
 import { defineConfig } from 'astro/config';
+
+// public/fonts/genty/ holds the original Genty download, with its personal-use
+// licence file. The site serves its own copy (public/fonts/genty.otf, under
+// the commercial licence), so drop that folder from every build.
+const dropDevOnlyFonts = {
+  name: 'drop-dev-only-fonts',
+  hooks: {
+    'astro:build:done': async ({ dir }) => {
+      await rm(new URL('fonts/genty/', dir), { recursive: true, force: true });
+    },
+  },
+};
 
 export default defineConfig({
   // SST deploys the Worker (not wrangler), so skip the adapter's auto-provisioned
@@ -9,7 +23,7 @@ export default defineConfig({
   // binding in sst.config.ts if you need them.
   adapter: cloudflare({ imageService: 'compile' }),
   session: false,
-  integrations: [react()],
+  integrations: [react(), dropDevOnlyFonts],
   output: 'server',
   server: {
     port: 3000,

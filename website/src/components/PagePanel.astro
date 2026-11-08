@@ -1,0 +1,46 @@
+---
+// Subpage body under the full-page Hero: a white panel that rides up over the
+// bottom of the hero, in the same page grid and lines as the home page
+// (src/pages/index.astro).
+---
+
+<div class="page-grid">
+  <article class="panel">
+    <slot />
+  </article>
+</div>
+
+<style>
+  /* Page grid: gutters either side, content column up to 1120px wide. */
+  .page-grid {
+    display: grid;
+    grid-template-columns:
+      [full-start] minmax(var(--gutter), 1fr)
+      [content-start] minmax(0, 1120px)
+      [content-end] minmax(var(--gutter), 1fr)
+      [full-end];
+    --section-gap: clamp(3rem, 6vw, 5rem);
+    padding-bottom: var(--section-gap);
+    /* Line closing off the page above the footer (no line along the hero's
+       bottom edge). */
+    border-bottom: var(--frame-width) solid var(--frame-color);
+  }
+  .page-grid > * {
+    grid-column: content;
+  }
+
+  /* White panel, riding up over the bottom of the hero. */
+  .panel {
+    position: relative;
+    z-index: 1;
+    margin-top: calc(-1 * var(--hero-overlap));
+    padding: clamp(2rem, 6vw, 4.5rem) clamp(1.25rem, 5vw, 4rem);
+    background: #fff;
+    border-radius: var(--frame-radius);
+    /* Big soft shadow, cast up over the hero the panel overlaps, with a
+       dark navy tint rather than pure black. */
+    box-shadow:
+      0 -24px 80px rgb(10 20 50 / 0.2),
+      0 -6px 24px rgb(10 15 35 / 0.2);
+  }
+</style>

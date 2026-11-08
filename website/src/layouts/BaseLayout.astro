@@ -31,24 +31,14 @@ const contact = {
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <!-- Brand font for the "Malt Biscuit" name (Eracake, via CDNFonts). -->
-    <link rel="preconnect" href="https://fonts.cdnfonts.com" crossorigin />
-    <link href="https://fonts.cdnfonts.com/css/eracake" rel="stylesheet" />
-    {
-      /* Genty demo font: personal-use licence, no webfont embedding. Dev server
-         only, never in a production build; the files are gitignored. */
-      import.meta.env.DEV && (
-        <style
-          set:html={`@font-face{font-family:'Genty Demo';src:url('/fonts/genty/GentyDemo-Regular.otf') format('opentype');font-display:swap}`}
-        />
-      )
-    }
+    <!-- Brand font (Genty), preloaded so the hero title doesn't flash. -->
+    <link rel="preload" href="/fonts/genty.otf" as="font" type="font/otf" crossorigin />
     <title>{title}</title>
     <ClientRouter />
   </head>
   <body>
     <nav class:list={["site-nav", { overlay: overlayNav }]} aria-label="Main">
-      <a href="/" class="wordmark" aria-label="Malt Biscuit, home"><Logo variant="mark" size={52} background="#fff02e" /></a>
+      <a href="/" class="wordmark" aria-label="Malt Biscuit, home"><Logo variant="mark" size={78} background="#fff02e" /></a>
       <div class="nav-actions">
         <a href="/#contact" class="nav-link" data-contact>Contact</a>
         <a href="/#book" class="nav-btn nav-cta" data-booking>Book Now</a>
@@ -62,16 +52,11 @@ const contact = {
 </html>
 
 <style is:global>
-  /* Genty Bold Rounded (Flavortype). Commercial licence required: the free
-     download is personal use only. Put the licensed file in public/fonts as
-     genty.woff2 (best), genty.otf or genty.ttf; until then the hero falls
-     back to Eracake. */
+  /* Genty (Flavortype), used under Malt Biscuit's commercial licence.
+     Self-hosted from public/fonts/genty.otf. */
   @font-face {
     font-family: 'Genty';
-    src:
-      url('/fonts/genty.woff2') format('woff2'),
-      url('/fonts/genty.otf') format('opentype'),
-      url('/fonts/genty.ttf') format('truetype');
+    src: url('/fonts/genty.otf') format('opentype');
     font-weight: 400;
     font-style: normal;
     font-display: swap;
@@ -80,10 +65,8 @@ const contact = {
     /* How far the main content panel rides up over the bottom of the hero. */
     --hero-overlap: clamp(4.5rem, 14svh, 9rem);
     --gutter: clamp(1rem, 4vw, 2.5rem);
-    /* Display font for the "Malt Biscuit" name in the hero: Genty (licensed
-       file, @font-face below), then the Genty demo (dev server only, see
-       <head>), then Eracake (CDNFonts) everywhere else. */
-    --font-brand: 'Genty', 'Genty Demo', 'Eracake', 'Cooper Black', Georgia, serif;
+    /* Display font for the "Malt Biscuit" name in the hero (@font-face above). */
+    --font-brand: 'Genty', 'Cooper Black', Georgia, serif;
     font-family: Inter, ui-sans-serif, system-ui, sans-serif;
     color: #000000;
     background: #f5f5f5;
@@ -104,7 +87,7 @@ const contact = {
     justify-content: space-between;
     gap: 1rem;
     max-width: 1120px;
-    height: 56px;
+    height: 88px;
     margin: 0 auto;
     padding: 0 1.5rem;
   }
@@ -156,7 +139,7 @@ const contact = {
     inset: 0 0 auto;
     z-index: 10;
     max-width: none;
-    height: calc(72px + env(safe-area-inset-top, 0px));
+    height: calc(104px + env(safe-area-inset-top, 0px));
     padding-top: env(safe-area-inset-top, 0px);
   }
 

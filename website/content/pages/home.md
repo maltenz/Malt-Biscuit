@@ -70,7 +70,7 @@ sections:
         logo: /images/sponsors/streetsoundz.svg
         url: ''
       - name: ZeroFlex
-        logo: /images/sponsors/zeroflex.svg
+        logo: /images/sponsors/zeroflex.png
         url: ''
     _template: sponsors
 ---
