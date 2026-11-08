@@ -50,7 +50,7 @@ for (const section of sections) {
       {
         groups.map((group) =>
           group.panel ? (
-            <article class="panel frame frame-flat">
+            <article class="panel">
               <div class="panel-grid">
                 {group.sections.map(
                   (section) => section._template === 'feature' && <Feature section={section} />,
@@ -76,7 +76,7 @@ for (const section of sections) {
       }
       {
         home?.hasBody && Content && (
-          <article class="panel frame frame-flat">
+          <article class="panel">
             <div class="panel-grid prose">
               <Content />
             </div>
@@ -114,7 +114,7 @@ for (const section of sections) {
     z-index: 1;
     padding: clamp(2rem, 6vw, 4.5rem) clamp(1.25rem, 5vw, 4rem);
     background: #fff;
-    /* Border and corners: the global .frame class, flat (no offset shadow). */
+    border-radius: var(--frame-radius);
   }
   .panel:first-child {
     margin-top: calc(-1 * var(--hero-overlap));
