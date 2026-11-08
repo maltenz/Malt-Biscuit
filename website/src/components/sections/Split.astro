@@ -108,10 +108,12 @@ const external = /^https?:\/\//.test(href);
     color: #000000;
   }
 
-  /* Photo in the shared frame, kept straight. */
+  /* Photo in the shared frame, tilted a little to the left (the stat
+     sticker leans the other way). */
   .media {
     position: relative;
     margin: 0;
+    rotate: -1deg;
   }
 
   /* Stat sticker over the photo's bottom corner (opposite the tilt), echoing
