@@ -13,3 +13,6 @@ website/tina/__generated__/*
 .dev.vars
 *.log
 .DS_Store
+
+# Genty demo font: personal-use licence, local dev only. Never commit or deploy.
+website/public/fonts/genty/

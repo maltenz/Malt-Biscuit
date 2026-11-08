@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getPages, type Page } from '../lib/content';
+
+// Plain text pages (privacy, terms, …): any Tina page without its own route.
+// Title, description and the markdown body come from content/pages/<slug>.md.
+export const prerender = true;
+
+export function getStaticPaths() {
+  // Pages with a dedicated route in src/pages. (Declared in here: Astro runs
+  // getStaticPaths on its own, without the rest of the frontmatter.)
+  const OWN_ROUTES = new Set(['home', 'brand']);
+  return getPages()
+    .filter((page) => !OWN_ROUTES.has(page.slug))
+    .map((page) => ({ params: { slug: page.slug }, props: { page } }));
+}
+
+const { page } = Astro.props as { page: Page };
+const { title, description, Content } = page;
+---
+
+<BaseLayout title={`${title} · Malt Biscuit`} description={description}>
+  <main>
+    <header>
+      <h1>{title}</h1>
+      <p class="lede">{description}</p>
+    </header>
+    <article class="prose">
+      <Content />
+    </article>
+  </main>
+</BaseLayout>
+
+<style>
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 5rem;
+  }
+  h1 {
+    margin: 0;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .lede {
+    margin: 0.75rem 0 2.5rem;
+    color: #525252;
+    font-size: 1.125rem;
+  }
+</style>

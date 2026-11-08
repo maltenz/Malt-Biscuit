@@ -2,8 +2,12 @@
   "footer": {
     "tagline": "Melodic House DJ based in Hawkes Bay",
     "cta": {
-      "label": "Book a popup",
+      "label": "Book Now",
       "href": "/#book"
+    },
+    "instagram": {
+      "handle": "maltbiscuit",
+      "href": "https://www.instagram.com/maltbiscuit/"
     },
     "about": {
       "logo": "/aimii-icon.png",
@@ -13,6 +17,20 @@
         "label": "Visit aimii.io",
         "href": "https://aimii.io"
       }
-    }
+    },
+    "links": [
+      {
+        "label": "Privacy",
+        "href": "/privacy"
+      },
+      {
+        "label": "Terms",
+        "href": "/terms"
+      },
+      {
+        "label": "Contact",
+        "href": "/contact"
+      }
+    ]
   }
 }

@@ -2,6 +2,10 @@
 import { settings } from '../lib/settings';
 import Logo from './Logo.astro';
 
+// Material "Instagram" icon (@mui/icons-material), viewBox 0 0 24 24.
+const INSTAGRAM =
+  'M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z';
+
 // Site footer, on every page (BaseLayout). Content comes from Tina's
 // "Site settings" (content/settings/site.json).
 const footer = settings.footer ?? {};
@@ -9,23 +13,35 @@ const about = footer.about;
 const aboutLink = about?.link?.label && about.link.href ? about.link : undefined;
 const external = (href = '') => /^https?:\/\//.test(href);
 const year = new Date().getFullYear();
+const bottomLinks = (footer.links ?? []).filter((l) => l?.label && l.href);
+const insta = footer.instagram?.handle?.replace(/^@/, '').trim();
+const instaHref = footer.instagram?.href?.trim() || (insta && `https://www.instagram.com/${insta}/`);
 ---
 
-<footer class="site-footer">
+<footer class="site-footer" id="contact">
   <div class="inner">
     <div class="brand">
       <a href="/" class="brand-link" aria-label="Malt Biscuit, home">
-        <Logo size={56} />
-        <span class="font-brand name">Malt Biscuit</span>
+        <Logo size={112} />
       </a>
       {footer.tagline && <p class="tagline">{footer.tagline}</p>}
-      {
-        footer.cta?.label && (
-          <a class="cta" href={footer.cta.href || '/#book'}>
-            {footer.cta.label}
-          </a>
-        )
-      }
+      <div class="actions">
+        {
+          footer.cta?.label && (
+            <a class="cta" href={footer.cta.href || '/#book'} data-booking>
+              {footer.cta.label}
+            </a>
+          )
+        }
+        {
+          insta && (
+            <a class="insta" href={instaHref} target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d={INSTAGRAM} /></svg>
+              <span><span class="visually-hidden">Instagram: </span>@{insta}</span>
+            </a>
+          )
+        }
+      </div>
     </div>
 
     {
@@ -65,6 +81,24 @@ const year = new Date().getFullYear();
 
   <div class="bottom">
     <p>© {year} Malt Biscuit</p>
+    {
+      bottomLinks.length > 0 && (
+        <nav aria-label="Legal">
+          <ul>
+            {bottomLinks.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  {...(external(link.href) ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )
+    }
   </div>
 </footer>
 
@@ -93,19 +127,21 @@ const year = new Date().getFullYear();
     color: inherit;
     text-decoration: none;
   }
-  .name {
-    font-size: 1.75rem;
-    line-height: 1;
-  }
   .tagline {
     max-width: 22rem;
     margin: 1rem 0 0;
     color: rgb(255 255 255 / 0.7);
     line-height: 1.6;
   }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
   .cta {
     display: inline-block;
-    margin-top: 1.5rem;
     padding: 0.625rem 1.25rem;
     border: var(--frame-width) solid #fff;
     border-radius: 999px;
@@ -121,6 +157,42 @@ const year = new Date().getFullYear();
   .cta:hover {
     transform: translate(-2px, -2px);
     box-shadow: 6px 6px 0 #fff;
+  }
+
+  /* Instagram: outlined pill with the glyph, same shape and shadow as the
+     button but no fill, so it sits back next to the yellow CTA. */
+  .insta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem 0.625rem 1rem;
+    border: var(--frame-width) solid #fff;
+    border-radius: 999px;
+    background: transparent;
+    color: #fff;
+    font-weight: 800;
+    text-decoration: none;
+    box-shadow: 4px 4px 0 #fff;
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+  .insta svg {
+    width: 1.375rem;
+    height: 1.375rem;
+    fill: currentColor;
+  }
+  .insta:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 #fff;
+  }
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
   }
 
   h2 {
@@ -185,8 +257,32 @@ const year = new Date().getFullYear();
     color: rgb(255 255 255 / 0.55);
     font-size: 0.875rem;
   }
+  .bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
+  }
   .bottom p {
     margin: 0;
+  }
+  .bottom ul {
+    display: flex;
+    gap: 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .bottom a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .bottom a:hover {
+    color: #fff;
+    text-decoration: underline;
+    text-decoration-color: #ff35b3;
+    text-underline-offset: 3px;
   }
 
   @media (max-width: 760px) {
@@ -195,7 +291,8 @@ const year = new Date().getFullYear();
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .cta {
+    .cta,
+    .insta {
       transition: none;
     }
   }

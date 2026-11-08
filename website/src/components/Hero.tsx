@@ -64,15 +64,47 @@ const Section = styled('section')(({ theme }) => ({
 }));
 
 const Card = styled('div')(({ theme }) => ({
-  maxWidth: 640,
-  padding: theme.spacing(6, 6, 5),
+  // A circle: square box, 50% corners (via the frame's radius variable).
+  // No padding: the content is centred and sized to the circle (see h1).
+  '--circle': 'clamp(400px, 42vw, 540px)',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center',
+  width: 'var(--circle)',
+  height: 'var(--circle)',
+  padding: 0,
+  '--frame-radius': '50%',
+  // Heading scales with the circle, not the viewport, so it always fits.
+  '& h1': { fontSize: 'calc(var(--circle) * 0.11)' },
   textAlign: 'center',
-  background: theme.palette.lemon.main,
+  // Vinyl record in yellow. Top layer: the centre label, a deeper shade of
+  // lemon with a thin dark edge. Under it: faint grooves around the outside.
+  '--lemon': theme.palette.lemon.main,
+  '--label': 'color-mix(in srgb, var(--lemon), #ff9a00 18%)',
+  '--groove': 'color-mix(in srgb, var(--lemon), #000 7%)',
+  background: `
+    radial-gradient(circle closest-side,
+      var(--label) 0 72%,
+      var(--groove) 72% calc(72% + 2px),
+      transparent calc(72% + 2px)),
+    repeating-radial-gradient(circle,
+      var(--lemon) 0 7px,
+      var(--groove) 7px 8px),
+    var(--lemon)`,
   color: theme.palette.lemon.contrastText,
-  // Border, corners and offset shadow come from the global `.frame` class
+  // Border and offset shadow come from the global `.frame` class
   // (BaseLayout.astro), shared with the main content panel.
+  // Phones: too narrow for title, text and buttons inside a circle, so it
+  // goes back to a rounded card.
   [theme.breakpoints.down('sm')]: {
+    width: 'auto',
+    height: 'auto',
+    maxWidth: 640,
     padding: theme.spacing(4.5, 3, 4),
+    '--frame-radius': '22px',
+    background: 'var(--lemon)',
+    '& h1': { fontSize: 'clamp(2.25rem, 7.5vw, 4.25rem)' },
   },
 }));
 
@@ -108,6 +140,7 @@ const linkProps = (href?: string | null) => {
 };
 
 function HeroSection({ title, description, primaryAction, secondaryAction }: HeroProps) {
+  const [firstWord, restOfTitle] = title.trim().split(/\s+(.*)/);
   return (
     <Section>
       <Card className="frame">
@@ -122,7 +155,10 @@ function HeroSection({ title, description, primaryAction, secondaryAction }: Her
             fontSize: 'clamp(2.25rem, 7.5vw, 4.25rem)',
           }}
         >
-          {title}
+          {/* "Malt Biscuit" stacks on two lines: break after the first word. */}
+          {firstWord}
+          {restOfTitle && <br />}
+          {restOfTitle}
         </Typography>
         <Typography sx={{ mt: 2.5, fontSize: '1.125rem', lineHeight: 1.6, textWrap: 'pretty' }}>
           {description}
@@ -130,7 +166,9 @@ function HeroSection({ title, description, primaryAction, secondaryAction }: Her
         <Stack direction="row" sx={{ flexWrap: 'wrap', justifyContent: 'center', gap: 1.5, mt: 4 }}>
           {primaryAction?.label && (
             <Button
-              {...linkProps(primaryAction.href)}
+              // Opens the booking dialog (BookingDialog.tsx); /#book without JS.
+              {...linkProps(primaryAction.href || '/#book')}
+              data-booking
               variant="contained"
               color="flamingo"
               size="large"

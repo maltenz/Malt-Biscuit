@@ -310,6 +310,10 @@ export default defineConfig({
                     name: 'heading',
                     label: 'Heading',
                     description: 'e.g. "Sponsored by".',
+                    // Required like the other sections' headings: Tina queries all
+                    // section templates together, and a field shared across them
+                    // must have the same nullability.
+                    required: true,
                   },
                   {
                     type: 'object',
@@ -357,6 +361,28 @@ export default defineConfig({
                 fields: [
                   { type: 'string', name: 'label', label: 'Label' },
                   { type: 'string', name: 'href', label: 'Link' },
+                ],
+              },
+              {
+                type: 'object',
+                name: 'instagram',
+                label: 'Instagram',
+                description: 'Shown next to the button. Leave the handle empty to hide it.',
+                fields: [
+                  { type: 'string', name: 'handle', label: 'Handle (without @)' },
+                  { type: 'string', name: 'href', label: 'Profile link' },
+                ],
+              },
+              {
+                type: 'object',
+                name: 'links',
+                label: 'Bottom links',
+                description: 'Small links next to the copyright line, e.g. Privacy and Terms.',
+                list: true,
+                ui: { itemProps: (item: { label?: string }) => ({ label: item?.label }) },
+                fields: [
+                  { type: 'string', name: 'label', label: 'Label' },
+                  { type: 'string', name: 'href', label: 'Link', description: 'A page (/privacy) or a web address.' },
                 ],
               },
               {

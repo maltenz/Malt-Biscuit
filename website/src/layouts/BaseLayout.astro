@@ -1,6 +1,7 @@
 ---
 import { ClientRouter } from 'astro:transitions';
 
+import BookingDialog from '../components/BookingDialog';
 import Footer from '../components/Footer.astro';
 import Logo from '../components/Logo.astro';
 
@@ -23,27 +24,56 @@ const { title, description, overlayNav = false } = Astro.props;
     <!-- Brand font for the "Malt Biscuit" name (Eracake, via CDNFonts). -->
     <link rel="preconnect" href="https://fonts.cdnfonts.com" crossorigin />
     <link href="https://fonts.cdnfonts.com/css/eracake" rel="stylesheet" />
+    {
+      /* Genty demo font: personal-use licence, no webfont embedding. Dev server
+         only, never in a production build; the files are gitignored. */
+      import.meta.env.DEV && (
+        <style
+          set:html={`@font-face{font-family:'Genty Demo';src:url('/fonts/genty/GentyDemo-Regular.otf') format('opentype');font-display:swap}`}
+        />
+      )
+    }
     <title>{title}</title>
     <ClientRouter />
   </head>
   <body>
     <nav class:list={["site-nav", { overlay: overlayNav }]} aria-label="Main">
-      <a href="/" class="wordmark" aria-label="Malt Biscuit, home"><Logo size={44} /></a>
-      <a href="/#book" class="nav-cta">Book Now</a>
+      <a href="/" class="wordmark" aria-label="Malt Biscuit, home"><Logo variant="mark" size={52} background="#fff02e" /></a>
+      <div class="nav-actions">
+        <a href="/contact" class="nav-link">Contact</a>
+        <a href="/#book" class="nav-btn nav-cta" data-booking>Book Now</a>
+      </div>
     </nav>
     <slot />
     <Footer />
+    <!-- Opened by any [data-booking] element (the Book Now buttons). -->
+    <BookingDialog client:idle />
   </body>
 </html>
 
 <style is:global>
+  /* Genty Bold Rounded (Flavortype). Commercial licence required: the free
+     download is personal use only. Put the licensed file in public/fonts as
+     genty.woff2 (best), genty.otf or genty.ttf; until then the hero falls
+     back to Eracake. */
+  @font-face {
+    font-family: 'Genty';
+    src:
+      url('/fonts/genty.woff2') format('woff2'),
+      url('/fonts/genty.otf') format('opentype'),
+      url('/fonts/genty.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
   :root {
     /* How far the main content panel rides up over the bottom of the hero. */
     --hero-overlap: clamp(4.5rem, 14svh, 9rem);
     --gutter: clamp(1rem, 4vw, 2.5rem);
-    /* Display font for the "Malt Biscuit" name, loaded from CDNFonts in
-       <head>. To change it, swap the family here and in that <link>. */
-    --font-brand: 'Eracake', 'Cooper Black', Georgia, serif;
+    /* Display font for the "Malt Biscuit" name in the hero: Genty (licensed
+       file, @font-face below), then the Genty demo (dev server only, see
+       <head>), then Eracake (CDNFonts) everywhere else. */
+    --font-brand: 'Genty', 'Genty Demo', 'Eracake', 'Cooper Black', Georgia, serif;
     font-family: Inter, ui-sans-serif, system-ui, sans-serif;
     color: #000000;
     background: #f5f5f5;
@@ -71,25 +101,44 @@ const { title, description, overlayNav = false } = Astro.props;
   .site-nav a { text-decoration: none; }
   .site-nav .wordmark { display: inline-flex; border-radius: 999px; }
 
-  /* Book Now pill: pink, black ring, small hard offset shadow (like .cta). */
-  .site-nav .nav-cta {
+  .site-nav .nav-actions { display: flex; align-items: center; gap: 1.25rem; }
+  /* Contact: pink text link with a black outline and hard offset shadow, so
+     it reads over both the white and black zebra stripes. */
+  .site-nav .nav-link {
+    display: inline-block;
+    color: #ff35b3;
+    font-size: 1.0625rem;
+    font-weight: 900;
+    -webkit-text-stroke: 1.5px #000;
+    paint-order: stroke fill;
+    text-shadow: 2px 2px 0 #000;
+    transition: transform 0.15s ease, text-shadow 0.15s ease;
+  }
+  .site-nav .nav-link:hover { transform: translate(-1px, -1px); text-shadow: 3px 3px 0 #000; }
+  .site-nav .nav-link:active { transform: translate(1px, 1px); text-shadow: 1px 1px 0 #000; }
+  .site-nav .nav-link:focus-visible { outline: 3px solid #4eb6f7; outline-offset: 3px; border-radius: 4px; }
+  /* Nav pills: black ring, bold label. */
+  .site-nav .nav-btn {
     display: inline-flex;
     align-items: center;
     padding: 0.5rem 1.125rem;
     border: var(--frame-width) solid var(--frame-color);
     border-radius: 999px;
-    background: #ff35b3;
     color: #000000;
     font-size: 0.9375rem;
     font-weight: 800;
     white-space: nowrap;
+  }
+  .site-nav .nav-btn:focus-visible { outline: 3px solid #4eb6f7; outline-offset: 3px; }
+  /* Book Now: pink, small hard offset shadow (like .cta). */
+  .site-nav .nav-cta {
+    background: #ff35b3;
     box-shadow: 3px 3px 0 var(--frame-color);
     transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
   .site-nav .nav-cta:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--frame-color); }
   .site-nav .nav-cta:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--frame-color); }
-  .site-nav .nav-cta:focus-visible { outline: 3px solid #4eb6f7; outline-offset: 3px; }
-  @media (prefers-reduced-motion: reduce) { .site-nav .nav-cta { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .site-nav .nav-btn, .site-nav .nav-link { transition: none; } }
 
   /* Overlay nav: floats over a full-page hero. */
   .site-nav.overlay {

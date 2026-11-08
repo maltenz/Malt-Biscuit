@@ -86,6 +86,8 @@ export type Query = {
   document: DocumentNode;
   page: Page;
   pageConnection: PageConnection;
+  settings: Settings;
+  settingsConnection: SettingsConnection;
 };
 
 
@@ -124,8 +126,24 @@ export type QueryPageConnectionArgs = {
   filter?: InputMaybe<PageFilter>;
 };
 
+
+export type QuerySettingsArgs = {
+  relativePath?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QuerySettingsConnectionArgs = {
+  before?: InputMaybe<Scalars['String']['input']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Float']['input']>;
+  last?: InputMaybe<Scalars['Float']['input']>;
+  sort?: InputMaybe<Scalars['String']['input']>;
+  filter?: InputMaybe<SettingsFilter>;
+};
+
 export type DocumentFilter = {
   page?: InputMaybe<PageFilter>;
+  settings?: InputMaybe<SettingsFilter>;
 };
 
 export type DocumentConnectionEdges = {
@@ -165,7 +183,7 @@ export type CollectionDocumentsArgs = {
   folder?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type DocumentNode = Page | Folder;
+export type DocumentNode = Page | Settings | Folder;
 
 export type PageHeroPrimaryAction = {
   __typename?: 'PageHeroPrimaryAction';
@@ -266,7 +284,21 @@ export type PageSectionsSplit = {
   action?: Maybe<PageSectionsSplitAction>;
 };
 
-export type PageSections = PageSectionsFeature | PageSectionsSplit;
+export type PageSectionsSponsorsSponsors = {
+  __typename?: 'PageSectionsSponsorsSponsors';
+  name: Scalars['String']['output'];
+  logo?: Maybe<Scalars['String']['output']>;
+  url?: Maybe<Scalars['String']['output']>;
+};
+
+export type PageSectionsSponsors = {
+  __typename?: 'PageSectionsSponsors';
+  anchor?: Maybe<Scalars['String']['output']>;
+  heading: Scalars['String']['output'];
+  sponsors?: Maybe<Array<Maybe<PageSectionsSponsorsSponsors>>>;
+};
+
+export type PageSections = PageSectionsFeature | PageSectionsSplit | PageSectionsSponsors;
 
 export type Page = Node & Document & {
   __typename?: 'Page';
@@ -381,9 +413,22 @@ export type PageSectionsSplitFilter = {
   action?: InputMaybe<PageSectionsSplitActionFilter>;
 };
 
+export type PageSectionsSponsorsSponsorsFilter = {
+  name?: InputMaybe<StringFilter>;
+  logo?: InputMaybe<ImageFilter>;
+  url?: InputMaybe<StringFilter>;
+};
+
+export type PageSectionsSponsorsFilter = {
+  anchor?: InputMaybe<StringFilter>;
+  heading?: InputMaybe<StringFilter>;
+  sponsors?: InputMaybe<PageSectionsSponsorsSponsorsFilter>;
+};
+
 export type PageSectionsFilter = {
   feature?: InputMaybe<PageSectionsFeatureFilter>;
   split?: InputMaybe<PageSectionsSplitFilter>;
+  sponsors?: InputMaybe<PageSectionsSponsorsFilter>;
 };
 
 export type RichTextFilter = {
@@ -414,6 +459,107 @@ export type PageConnection = Connection & {
   edges?: Maybe<Array<Maybe<PageConnectionEdges>>>;
 };
 
+export type SettingsFooterCta = {
+  __typename?: 'SettingsFooterCta';
+  label?: Maybe<Scalars['String']['output']>;
+  href?: Maybe<Scalars['String']['output']>;
+};
+
+export type SettingsFooterInstagram = {
+  __typename?: 'SettingsFooterInstagram';
+  handle?: Maybe<Scalars['String']['output']>;
+  href?: Maybe<Scalars['String']['output']>;
+};
+
+export type SettingsFooterLinks = {
+  __typename?: 'SettingsFooterLinks';
+  label?: Maybe<Scalars['String']['output']>;
+  href?: Maybe<Scalars['String']['output']>;
+};
+
+export type SettingsFooterAboutLink = {
+  __typename?: 'SettingsFooterAboutLink';
+  label?: Maybe<Scalars['String']['output']>;
+  href?: Maybe<Scalars['String']['output']>;
+};
+
+export type SettingsFooterAbout = {
+  __typename?: 'SettingsFooterAbout';
+  logo?: Maybe<Scalars['String']['output']>;
+  heading?: Maybe<Scalars['String']['output']>;
+  text?: Maybe<Scalars['String']['output']>;
+  link?: Maybe<SettingsFooterAboutLink>;
+};
+
+export type SettingsFooter = {
+  __typename?: 'SettingsFooter';
+  tagline?: Maybe<Scalars['String']['output']>;
+  cta?: Maybe<SettingsFooterCta>;
+  instagram?: Maybe<SettingsFooterInstagram>;
+  links?: Maybe<Array<Maybe<SettingsFooterLinks>>>;
+  about?: Maybe<SettingsFooterAbout>;
+};
+
+export type Settings = Node & Document & {
+  __typename?: 'Settings';
+  footer?: Maybe<SettingsFooter>;
+  id: Scalars['ID']['output'];
+  _sys: SystemInfo;
+  _values: Scalars['JSON']['output'];
+};
+
+export type SettingsFooterCtaFilter = {
+  label?: InputMaybe<StringFilter>;
+  href?: InputMaybe<StringFilter>;
+};
+
+export type SettingsFooterInstagramFilter = {
+  handle?: InputMaybe<StringFilter>;
+  href?: InputMaybe<StringFilter>;
+};
+
+export type SettingsFooterLinksFilter = {
+  label?: InputMaybe<StringFilter>;
+  href?: InputMaybe<StringFilter>;
+};
+
+export type SettingsFooterAboutLinkFilter = {
+  label?: InputMaybe<StringFilter>;
+  href?: InputMaybe<StringFilter>;
+};
+
+export type SettingsFooterAboutFilter = {
+  logo?: InputMaybe<ImageFilter>;
+  heading?: InputMaybe<StringFilter>;
+  text?: InputMaybe<StringFilter>;
+  link?: InputMaybe<SettingsFooterAboutLinkFilter>;
+};
+
+export type SettingsFooterFilter = {
+  tagline?: InputMaybe<StringFilter>;
+  cta?: InputMaybe<SettingsFooterCtaFilter>;
+  instagram?: InputMaybe<SettingsFooterInstagramFilter>;
+  links?: InputMaybe<SettingsFooterLinksFilter>;
+  about?: InputMaybe<SettingsFooterAboutFilter>;
+};
+
+export type SettingsFilter = {
+  footer?: InputMaybe<SettingsFooterFilter>;
+};
+
+export type SettingsConnectionEdges = {
+  __typename?: 'SettingsConnectionEdges';
+  cursor: Scalars['String']['output'];
+  node?: Maybe<Settings>;
+};
+
+export type SettingsConnection = Connection & {
+  __typename?: 'SettingsConnection';
+  pageInfo: PageInfo;
+  totalCount: Scalars['Float']['output'];
+  edges?: Maybe<Array<Maybe<SettingsConnectionEdges>>>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addPendingDocument: DocumentNode;
@@ -423,6 +569,8 @@ export type Mutation = {
   createFolder: DocumentNode;
   updatePage: Page;
   createPage: Page;
+  updateSettings: Settings;
+  createSettings: Settings;
 };
 
 
@@ -470,13 +618,27 @@ export type MutationCreatePageArgs = {
   params: PageMutation;
 };
 
+
+export type MutationUpdateSettingsArgs = {
+  relativePath: Scalars['String']['input'];
+  params: SettingsMutation;
+};
+
+
+export type MutationCreateSettingsArgs = {
+  relativePath: Scalars['String']['input'];
+  params: SettingsMutation;
+};
+
 export type DocumentUpdateMutation = {
   page?: InputMaybe<PageMutation>;
+  settings?: InputMaybe<SettingsMutation>;
   relativePath?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type DocumentMutation = {
   page?: InputMaybe<PageMutation>;
+  settings?: InputMaybe<SettingsMutation>;
 };
 
 export type PageHeroPrimaryActionMutation = {
@@ -565,9 +727,22 @@ export type PageSectionsSplitMutation = {
   action?: InputMaybe<PageSectionsSplitActionMutation>;
 };
 
+export type PageSectionsSponsorsSponsorsMutation = {
+  name?: InputMaybe<Scalars['String']['input']>;
+  logo?: InputMaybe<Scalars['String']['input']>;
+  url?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type PageSectionsSponsorsMutation = {
+  anchor?: InputMaybe<Scalars['String']['input']>;
+  heading?: InputMaybe<Scalars['String']['input']>;
+  sponsors?: InputMaybe<Array<InputMaybe<PageSectionsSponsorsSponsorsMutation>>>;
+};
+
 export type PageSectionsMutation = {
   feature?: InputMaybe<PageSectionsFeatureMutation>;
   split?: InputMaybe<PageSectionsSplitMutation>;
+  sponsors?: InputMaybe<PageSectionsSponsorsMutation>;
 };
 
 export type PageMutation = {
@@ -577,6 +752,45 @@ export type PageMutation = {
   swatchNotes?: InputMaybe<Array<InputMaybe<PageSwatchNotesMutation>>>;
   sections?: InputMaybe<Array<InputMaybe<PageSectionsMutation>>>;
   body?: InputMaybe<Scalars['RichText']['input']>;
+};
+
+export type SettingsFooterCtaMutation = {
+  label?: InputMaybe<Scalars['String']['input']>;
+  href?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type SettingsFooterInstagramMutation = {
+  handle?: InputMaybe<Scalars['String']['input']>;
+  href?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type SettingsFooterLinksMutation = {
+  label?: InputMaybe<Scalars['String']['input']>;
+  href?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type SettingsFooterAboutLinkMutation = {
+  label?: InputMaybe<Scalars['String']['input']>;
+  href?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type SettingsFooterAboutMutation = {
+  logo?: InputMaybe<Scalars['String']['input']>;
+  heading?: InputMaybe<Scalars['String']['input']>;
+  text?: InputMaybe<Scalars['String']['input']>;
+  link?: InputMaybe<SettingsFooterAboutLinkMutation>;
+};
+
+export type SettingsFooterMutation = {
+  tagline?: InputMaybe<Scalars['String']['input']>;
+  cta?: InputMaybe<SettingsFooterCtaMutation>;
+  instagram?: InputMaybe<SettingsFooterInstagramMutation>;
+  links?: InputMaybe<Array<InputMaybe<SettingsFooterLinksMutation>>>;
+  about?: InputMaybe<SettingsFooterAboutMutation>;
+};
+
+export type SettingsMutation = {
+  footer?: InputMaybe<SettingsFooterMutation>;
 };
 
 export type StringFilter = {
@@ -679,9 +893,22 @@ export type PageSectionsSplitFilter = {
   action?: PageSectionsSplitActionFilter | null | undefined;
 };
 
+export type PageSectionsSponsorsSponsorsFilter = {
+  name?: StringFilter | null | undefined;
+  logo?: ImageFilter | null | undefined;
+  url?: StringFilter | null | undefined;
+};
+
+export type PageSectionsSponsorsFilter = {
+  anchor?: StringFilter | null | undefined;
+  heading?: StringFilter | null | undefined;
+  sponsors?: PageSectionsSponsorsSponsorsFilter | null | undefined;
+};
+
 export type PageSectionsFilter = {
   feature?: PageSectionsFeatureFilter | null | undefined;
   split?: PageSectionsSplitFilter | null | undefined;
+  sponsors?: PageSectionsSponsorsFilter | null | undefined;
 };
 
 export type RichTextFilter = {
@@ -699,10 +926,52 @@ export type PageFilter = {
   body?: RichTextFilter | null | undefined;
 };
 
+export type SettingsFooterCtaFilter = {
+  label?: StringFilter | null | undefined;
+  href?: StringFilter | null | undefined;
+};
+
+export type SettingsFooterInstagramFilter = {
+  handle?: StringFilter | null | undefined;
+  href?: StringFilter | null | undefined;
+};
+
+export type SettingsFooterLinksFilter = {
+  label?: StringFilter | null | undefined;
+  href?: StringFilter | null | undefined;
+};
+
+export type SettingsFooterAboutLinkFilter = {
+  label?: StringFilter | null | undefined;
+  href?: StringFilter | null | undefined;
+};
+
+export type SettingsFooterAboutFilter = {
+  logo?: ImageFilter | null | undefined;
+  heading?: StringFilter | null | undefined;
+  text?: StringFilter | null | undefined;
+  link?: SettingsFooterAboutLinkFilter | null | undefined;
+};
+
+export type SettingsFooterFilter = {
+  tagline?: StringFilter | null | undefined;
+  cta?: SettingsFooterCtaFilter | null | undefined;
+  instagram?: SettingsFooterInstagramFilter | null | undefined;
+  links?: SettingsFooterLinksFilter | null | undefined;
+  about?: SettingsFooterAboutFilter | null | undefined;
+};
+
+export type SettingsFilter = {
+  footer?: SettingsFooterFilter | null | undefined;
+};
+
 export type PagePartsFragment = { __typename: 'Page', title: string, description: string, body: TinaMarkdownContent | null, hero: { __typename: 'PageHero', primaryAction: { __typename: 'PageHeroPrimaryAction', label: string | null, href: string | null } | null, secondaryAction: { __typename: 'PageHeroSecondaryAction', label: string | null, href: string | null } | null } | null, swatchNotes: Array<{ __typename: 'PageSwatchNotes', swatch: string, role: string | null, usage: string | null } | null> | null, sections: Array<
     | { __typename: 'PageSectionsFeature', anchor: string | null, eyebrow: string | null, heading: string, text: string | null, video: string | null, image: string | null, imageAlt: string | null, points: Array<{ __typename: 'PageSectionsFeaturePoints', icon: string | null, title: string, text: string | null } | null> | null, videoTag: { __typename: 'PageSectionsFeatureVideoTag', label: string | null, name: string | null, url: string | null } | null, credit: { __typename: 'PageSectionsFeatureCredit', label: string | null, names: Array<{ __typename: 'PageSectionsFeatureCreditNames', name: string, url: string | null } | null> | null } | null }
     | { __typename: 'PageSectionsSplit', anchor: string | null, eyebrow: string | null, heading: string, text: string | null, image: string | null, imageAlt: string | null, imageSide: string | null, background: string | null, stat: { __typename: 'PageSectionsSplitStat', value: string | null, label: string | null } | null, cards: Array<{ __typename: 'PageSectionsSplitCards', icon: string | null, title: string, text: string | null } | null> | null, action: { __typename: 'PageSectionsSplitAction', label: string | null, href: string | null } | null }
+    | { __typename: 'PageSectionsSponsors', anchor: string | null, heading: string, sponsors: Array<{ __typename: 'PageSectionsSponsorsSponsors', name: string, logo: string | null, url: string | null } | null> | null }
    | null> | null };
+
+export type SettingsPartsFragment = { __typename: 'Settings', footer: { __typename: 'SettingsFooter', tagline: string | null, cta: { __typename: 'SettingsFooterCta', label: string | null, href: string | null } | null, instagram: { __typename: 'SettingsFooterInstagram', handle: string | null, href: string | null } | null, links: Array<{ __typename: 'SettingsFooterLinks', label: string | null, href: string | null } | null> | null, about: { __typename: 'SettingsFooterAbout', logo: string | null, heading: string | null, text: string | null, link: { __typename: 'SettingsFooterAboutLink', label: string | null, href: string | null } | null } | null } | null };
 
 export type PageQueryVariables = Exact<{
   relativePath: string;
@@ -712,6 +981,7 @@ export type PageQueryVariables = Exact<{
 export type PageQuery = { page: { __typename: 'Page', id: string, title: string, description: string, body: TinaMarkdownContent | null, _sys: { filename: string, basename: string, hasReferences: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, hero: { __typename: 'PageHero', primaryAction: { __typename: 'PageHeroPrimaryAction', label: string | null, href: string | null } | null, secondaryAction: { __typename: 'PageHeroSecondaryAction', label: string | null, href: string | null } | null } | null, swatchNotes: Array<{ __typename: 'PageSwatchNotes', swatch: string, role: string | null, usage: string | null } | null> | null, sections: Array<
       | { __typename: 'PageSectionsFeature', anchor: string | null, eyebrow: string | null, heading: string, text: string | null, video: string | null, image: string | null, imageAlt: string | null, points: Array<{ __typename: 'PageSectionsFeaturePoints', icon: string | null, title: string, text: string | null } | null> | null, videoTag: { __typename: 'PageSectionsFeatureVideoTag', label: string | null, name: string | null, url: string | null } | null, credit: { __typename: 'PageSectionsFeatureCredit', label: string | null, names: Array<{ __typename: 'PageSectionsFeatureCreditNames', name: string, url: string | null } | null> | null } | null }
       | { __typename: 'PageSectionsSplit', anchor: string | null, eyebrow: string | null, heading: string, text: string | null, image: string | null, imageAlt: string | null, imageSide: string | null, background: string | null, stat: { __typename: 'PageSectionsSplitStat', value: string | null, label: string | null } | null, cards: Array<{ __typename: 'PageSectionsSplitCards', icon: string | null, title: string, text: string | null } | null> | null, action: { __typename: 'PageSectionsSplitAction', label: string | null, href: string | null } | null }
+      | { __typename: 'PageSectionsSponsors', anchor: string | null, heading: string, sponsors: Array<{ __typename: 'PageSectionsSponsorsSponsors', name: string, logo: string | null, url: string | null } | null> | null }
      | null> | null } };
 
 export type PageConnectionQueryVariables = Exact<{
@@ -727,7 +997,27 @@ export type PageConnectionQueryVariables = Exact<{
 export type PageConnectionQuery = { pageConnection: { totalCount: number, pageInfo: { hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges: Array<{ cursor: string, node: { __typename: 'Page', id: string, title: string, description: string, body: TinaMarkdownContent | null, _sys: { filename: string, basename: string, hasReferences: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, hero: { __typename: 'PageHero', primaryAction: { __typename: 'PageHeroPrimaryAction', label: string | null, href: string | null } | null, secondaryAction: { __typename: 'PageHeroSecondaryAction', label: string | null, href: string | null } | null } | null, swatchNotes: Array<{ __typename: 'PageSwatchNotes', swatch: string, role: string | null, usage: string | null } | null> | null, sections: Array<
           | { __typename: 'PageSectionsFeature', anchor: string | null, eyebrow: string | null, heading: string, text: string | null, video: string | null, image: string | null, imageAlt: string | null, points: Array<{ __typename: 'PageSectionsFeaturePoints', icon: string | null, title: string, text: string | null } | null> | null, videoTag: { __typename: 'PageSectionsFeatureVideoTag', label: string | null, name: string | null, url: string | null } | null, credit: { __typename: 'PageSectionsFeatureCredit', label: string | null, names: Array<{ __typename: 'PageSectionsFeatureCreditNames', name: string, url: string | null } | null> | null } | null }
           | { __typename: 'PageSectionsSplit', anchor: string | null, eyebrow: string | null, heading: string, text: string | null, image: string | null, imageAlt: string | null, imageSide: string | null, background: string | null, stat: { __typename: 'PageSectionsSplitStat', value: string | null, label: string | null } | null, cards: Array<{ __typename: 'PageSectionsSplitCards', icon: string | null, title: string, text: string | null } | null> | null, action: { __typename: 'PageSectionsSplitAction', label: string | null, href: string | null } | null }
+          | { __typename: 'PageSectionsSponsors', anchor: string | null, heading: string, sponsors: Array<{ __typename: 'PageSectionsSponsorsSponsors', name: string, logo: string | null, url: string | null } | null> | null }
          | null> | null } | null } | null> | null } };
+
+export type SettingsQueryVariables = Exact<{
+  relativePath: string;
+}>;
+
+
+export type SettingsQuery = { settings: { __typename: 'Settings', id: string, _sys: { filename: string, basename: string, hasReferences: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, footer: { __typename: 'SettingsFooter', tagline: string | null, cta: { __typename: 'SettingsFooterCta', label: string | null, href: string | null } | null, instagram: { __typename: 'SettingsFooterInstagram', handle: string | null, href: string | null } | null, links: Array<{ __typename: 'SettingsFooterLinks', label: string | null, href: string | null } | null> | null, about: { __typename: 'SettingsFooterAbout', logo: string | null, heading: string | null, text: string | null, link: { __typename: 'SettingsFooterAboutLink', label: string | null, href: string | null } | null } | null } | null } };
+
+export type SettingsConnectionQueryVariables = Exact<{
+  before?: string | null | undefined;
+  after?: string | null | undefined;
+  first?: number | null | undefined;
+  last?: number | null | undefined;
+  sort?: string | null | undefined;
+  filter?: SettingsFilter | null | undefined;
+}>;
+
+
+export type SettingsConnectionQuery = { settingsConnection: { totalCount: number, pageInfo: { hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges: Array<{ cursor: string, node: { __typename: 'Settings', id: string, _sys: { filename: string, basename: string, hasReferences: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, footer: { __typename: 'SettingsFooter', tagline: string | null, cta: { __typename: 'SettingsFooterCta', label: string | null, href: string | null } | null, instagram: { __typename: 'SettingsFooterInstagram', handle: string | null, href: string | null } | null, links: Array<{ __typename: 'SettingsFooterLinks', label: string | null, href: string | null } | null> | null, about: { __typename: 'SettingsFooterAbout', logo: string | null, heading: string | null, text: string | null, link: { __typename: 'SettingsFooterAboutLink', label: string | null, href: string | null } | null } | null } | null } | null } | null> | null } };
 
 export const PagePartsFragmentDoc = gql`
     fragment PageParts on Page {
@@ -811,8 +1101,53 @@ export const PagePartsFragmentDoc = gql`
         href
       }
     }
+    ... on PageSectionsSponsors {
+      anchor
+      heading
+      sponsors {
+        __typename
+        name
+        logo
+        url
+      }
+    }
   }
   body
+}
+    `;
+export const SettingsPartsFragmentDoc = gql`
+    fragment SettingsParts on Settings {
+  __typename
+  footer {
+    __typename
+    tagline
+    cta {
+      __typename
+      label
+      href
+    }
+    instagram {
+      __typename
+      handle
+      href
+    }
+    links {
+      __typename
+      label
+      href
+    }
+    about {
+      __typename
+      logo
+      heading
+      text
+      link {
+        __typename
+        label
+        href
+      }
+    }
+  }
 }
     `;
 export const PageDocument = gql`
@@ -872,6 +1207,63 @@ export const PageConnectionDocument = gql`
   }
 }
     ${PagePartsFragmentDoc}`;
+export const SettingsDocument = gql`
+    query settings($relativePath: String!) {
+  settings(relativePath: $relativePath) {
+    ... on Document {
+      _sys {
+        filename
+        basename
+        hasReferences
+        breadcrumbs
+        path
+        relativePath
+        extension
+      }
+      id
+    }
+    ...SettingsParts
+  }
+}
+    ${SettingsPartsFragmentDoc}`;
+export const SettingsConnectionDocument = gql`
+    query settingsConnection($before: String, $after: String, $first: Float, $last: Float, $sort: String, $filter: SettingsFilter) {
+  settingsConnection(
+    before: $before
+    after: $after
+    first: $first
+    last: $last
+    sort: $sort
+    filter: $filter
+  ) {
+    pageInfo {
+      hasPreviousPage
+      hasNextPage
+      startCursor
+      endCursor
+    }
+    totalCount
+    edges {
+      cursor
+      node {
+        ... on Document {
+          _sys {
+            filename
+            basename
+            hasReferences
+            breadcrumbs
+            path
+            relativePath
+            extension
+          }
+          id
+        }
+        ...SettingsParts
+      }
+    }
+  }
+}
+    ${SettingsPartsFragmentDoc}`;
 export type Requester<C= {}> = <R, V>(doc: DocumentNode, vars?: V, options?: C) => Promise<R>
   export function getSdk<C>(requester: Requester<C>) {
     return {
@@ -880,6 +1272,12 @@ export type Requester<C= {}> = <R, V>(doc: DocumentNode, vars?: V, options?: C) 
       },
     pageConnection(variables?: PageConnectionQueryVariables, options?: C): Promise<{data: PageConnectionQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: PageConnectionQueryVariables, query: string}> {
         return requester<{data: PageConnectionQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: PageConnectionQueryVariables, query: string}, PageConnectionQueryVariables>(PageConnectionDocument, variables, options);
+      },
+    settings(variables: SettingsQueryVariables, options?: C): Promise<{data: SettingsQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: SettingsQueryVariables, query: string}> {
+        return requester<{data: SettingsQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: SettingsQueryVariables, query: string}, SettingsQueryVariables>(SettingsDocument, variables, options);
+      },
+    settingsConnection(variables?: SettingsConnectionQueryVariables, options?: C): Promise<{data: SettingsConnectionQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: SettingsConnectionQueryVariables, query: string}> {
+        return requester<{data: SettingsConnectionQuery, errors?: { message: string, locations: { line: number, column: number }[], path: string[] }[], variables: SettingsConnectionQueryVariables, query: string}, SettingsConnectionQueryVariables>(SettingsConnectionDocument, variables, options);
       }
     };
   }
