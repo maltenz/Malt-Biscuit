@@ -7,7 +7,7 @@ hero:
     href: ''
   secondaryAction:
     label: Sound Cloud
-    href: ''
+    href: https://soundcloud.com/malt-biscuit
 sections:
   - anchor: popups
     eyebrow: Popups

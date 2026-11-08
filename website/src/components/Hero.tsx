@@ -10,6 +10,7 @@ import Typography from '@mui/material/Typography';
 import { type CSSProperties, useEffect, useRef, useState } from 'react';
 
 import { soundCloudPlayerUrl, useSoundCloudPlayback } from '../lib/soundcloud';
+import logoUrl from './MB_Black.svg?url';
 import MuiProvider from './MuiProvider';
 
 /** Profile photo on the record label; clicking it flips the record. */
@@ -209,7 +210,7 @@ const Avatar = styled('button')(({ theme }) => ({
     background: `center 20% / cover no-repeat url(${PROFILE_IMAGE})`,
     transform: 'scaleX(-1)',
   },
-  // Back: a yellow record, matching the main one, with the name dead centre.
+  // Back: a yellow record, matching the main one, with the logo dead centre.
   // It spins slowly while showing (aria-pressed), like it's playing.
   '& .record': {
     transform: 'rotateY(180deg)',
@@ -220,11 +221,8 @@ const Avatar = styled('button')(({ theme }) => ({
     display: 'grid',
     placeItems: 'center',
     background: RECORD,
-    color: theme.palette.lemon.contrastText,
-    fontFamily: 'var(--font-brand)',
-    fontSize: 'calc(var(--size) * 0.11)',
-    lineHeight: 1.05,
-    textAlign: 'center',
+    // Logo on the label (the label is 72% of the record across).
+    '& img': { display: 'block', width: '60%', height: 'auto' },
     // Slower than a real LP (33⅓ rpm would be 1.8s) so the name stays readable.
     animation: `${spin} 6s linear infinite`,
     animationPlayState: 'paused',
@@ -526,11 +524,7 @@ function HeroSection({
               <span className="face photo" />
               <span className="face record">
                 <span className="disc">
-                  <span>
-                    {firstWord}
-                    {restOfTitle && <br />}
-                    {restOfTitle}
-                  </span>
+                  <img src={logoUrl} alt="" />
                 </span>
               </span>
             </span>
