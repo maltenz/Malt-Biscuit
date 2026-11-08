@@ -16,7 +16,8 @@
     "ci": "biome ci .",
     "format": "biome format --write .",
     "format:check": "biome check .",
-    "tina": "tinacms dev -c \"astro dev\""
+    "tina": "tinacms dev -c \"astro dev\"",
+    "zebra": "node scripts/zebra.mjs 23 > public/zebra.svg"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.12",

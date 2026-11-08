@@ -1,0 +1,374 @@
+---
+import type { FeatureSection } from '../../lib/content';
+import { ICON_COLOURS, ICONS } from '../../lib/icons';
+
+// Feature section: label, heading, intro, icon points and a framed photo with
+// an optional credit tag. Edited in Tina under Pages → Sections → Feature.
+interface Props {
+  section: FeatureSection;
+}
+const { anchor, eyebrow, heading, text, points = [], video, videoTag, image, imageAlt, credit } =
+  Astro.props.section;
+
+const creditNames = credit?.names?.filter((n) => n.name) ?? [];
+---
+
+<section id={anchor} class="feature wide">
+  <div class="copy">
+    {eyebrow && <p class="tag">{eyebrow}</p>}
+    <h2 class="section-title">{heading}</h2>
+    {text && <p class="section-intro">{text}</p>}
+
+    {
+      points.length > 0 && (
+        <ul class="points">
+          {points.map((point, i) => (
+            <li>
+              <span class="icon-badge" style={`--icon-bg: ${ICON_COLOURS[i % ICON_COLOURS.length]}`}>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d={ICONS[point.icon ?? 'star']} />
+                </svg>
+              </span>
+              <div>
+                <h3>{point.title}</h3>
+                {point.text && <p>{point.text}</p>}
+              </div>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+
+  {
+    (video || image) && (
+      <figure class:list={['media', { 'has-video': video }]}>
+        {video ? (
+          <>
+            {/* Starts paused on its poster; the play button starts it with
+                sound. While it plays, the hero's zebra drift is paused (see
+                the script below and Hero.tsx). */}
+            <video
+              class="photo frame"
+              src={video}
+              poster={image}
+              aria-label={imageAlt}
+              playsinline
+              preload="metadata"
+              data-feature-video
+            />
+            <button
+              type="button"
+              class="video-toggle"
+              aria-label="Play video"
+              data-video-toggle
+              data-paused
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true" class="icon-pause">
+                <path d="M6 19h4V5H6zm8-14v14h4V5z" />
+              </svg>
+              <svg viewBox="0 0 24 24" aria-hidden="true" class="icon-play">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </button>
+            {videoTag?.name && (
+              <p class="video-tag">
+                {videoTag.label && <span class="video-tag-label">{videoTag.label} </span>}
+                {videoTag.url ? (
+                  <a href={videoTag.url} target="_blank" rel="noopener noreferrer">
+                    {videoTag.name}
+                  </a>
+                ) : (
+                  <span>{videoTag.name}</span>
+                )}
+              </p>
+            )}
+          </>
+        ) : (
+          <img class="photo frame" src={image} alt={imageAlt ?? ''} loading="lazy" decoding="async" />
+        )}
+        {creditNames.length > 0 && (
+          <figcaption class="credit frame">
+            {credit?.label && <span class="credit-label">{credit.label}</span>}
+            <span class="credit-names">
+              {creditNames.map((n, i) => (
+                <>
+                  {i > 0 && <span class="x" aria-hidden="true">×</span>}
+                  {i > 0 && <span class="sr-only"> and </span>}
+                  {n.url ? (
+                    <a href={n.url} target="_blank" rel="noopener noreferrer">
+                      {n.name}
+                    </a>
+                  ) : (
+                    <span>{n.name}</span>
+                  )}
+                </>
+              ))}
+            </span>
+          </figcaption>
+        )}
+      </figure>
+    )
+  }
+</section>
+
+<style>
+  .feature {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(2.5rem, 6vw, 5rem);
+  }
+
+  /* Tag, heading, intro and icon badges use the global section classes
+     (.tag, .section-title, .section-intro, .icon-badge) from BaseLayout. */
+
+  .points {
+    display: grid;
+    gap: 1.5rem;
+    margin: 2.25rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .points li {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 1rem;
+    align-items: start;
+  }
+  h3 {
+    margin: 0.2rem 0 0.25rem;
+    font-size: 1.125rem;
+    font-weight: 800;
+    line-height: 1.3;
+  }
+  .points p {
+    margin: 0;
+    line-height: 1.6;
+    color: #525252;
+  }
+
+  /* Photo in the shared frame, with the credit tag overlapping its bottom edge. */
+  .media {
+    position: relative;
+    margin: 0 0 2.5rem;
+  }
+  .photo {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    object-position: 30% center;
+    transform: rotate(1.5deg);
+  }
+  .credit {
+    --frame-offset: 6px;
+    position: absolute;
+    left: -1rem;
+    bottom: -1.75rem;
+    display: grid;
+    gap: 0.125rem;
+    padding: 0.75rem 1.125rem;
+    background: #fff02e;
+    border-radius: 18px;
+    transform: rotate(-3deg);
+  }
+  .credit-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .credit-names {
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+  .credit-names a {
+    color: inherit;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
+  .x {
+    margin: 0 0.4rem;
+    color: #ff35b3;
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  /* Video: same frame as the photo. While paused, a big lemon play button sits
+     in the middle; while playing, a small pause button sits in the top corner. */
+  video.photo {
+    background: #000000;
+    cursor: pointer;
+  }
+  .video-toggle {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border: 3px solid #000000;
+    border-radius: 999px;
+    background: #fff;
+    color: #000000;
+    cursor: pointer;
+    transform: rotate(1.5deg);
+    transition:
+      width 0.2s ease,
+      height 0.2s ease,
+      top 0.2s ease,
+      right 0.2s ease,
+      background-color 0.15s ease;
+  }
+  .video-toggle:hover {
+    background: #fff02e;
+  }
+  .video-toggle[data-paused] {
+    top: calc(50% - 2.75rem);
+    right: calc(50% - 2.75rem);
+    width: 5.5rem;
+    height: 5.5rem;
+    background: #fff02e;
+    box-shadow: 6px 6px 0 #000000;
+  }
+  .video-toggle[data-paused]:hover {
+    background: #fff;
+  }
+  .video-toggle[data-paused] svg {
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-left: 0.25rem; /* optically centre the triangle */
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .video-toggle {
+      transition: none;
+    }
+  }
+
+  /* Watermark tag on the video's top-left corner (e.g. "Featuring Sencha
+     Sound"). Bordered white pill, kept level rather than tilted, pulled out
+     over the corner with negative margins like a sticker. */
+  .video-tag {
+    position: absolute;
+    top: 0;
+    left: 0;
+    max-width: calc(100% - 4rem); /* clear of the pause button */
+    margin: -0.75rem 0 0 -0.75rem;
+    padding: 0.25rem 0.75rem;
+    border: 3px solid #000000;
+    border-radius: 999px;
+    background: #fff;
+    color: #000000;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .video-tag-label {
+    font-weight: 500;
+  }
+  .video-tag a {
+    color: inherit;
+    font-weight: 800;
+    text-decoration: none;
+  }
+  .video-tag a:hover,
+  .video-tag a:focus-visible {
+    text-decoration: underline;
+    text-decoration-color: #ff35b3;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
+  .video-tag a:focus-visible {
+    outline: 3px solid #ff35b3;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  .video-toggle:focus-visible {
+    outline: 3px solid #ff35b3;
+    outline-offset: 2px;
+  }
+  .video-toggle svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    fill: currentColor;
+  }
+  .video-toggle .icon-play,
+  .video-toggle[data-paused] .icon-pause {
+    display: none;
+  }
+  .video-toggle[data-paused] .icon-play {
+    display: block;
+  }
+
+  @media (max-width: 860px) {
+    .feature {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .photo {
+      aspect-ratio: 4 / 3;
+      transform: none;
+    }
+    /* Portrait video keeps a taller crop so the DJ stays in frame. */
+    .has-video .photo {
+      aspect-ratio: 4 / 5;
+    }
+    .video-toggle {
+      transform: none;
+    }
+    .credit {
+      left: 0.75rem;
+    }
+  }
+</style>
+
+<script>
+  // Play/pause for feature videos. Videos start paused; pressing play (the
+  // button or the video itself) plays with sound. While any feature video is
+  // playing, <html> gets `data-video-playing`, which pauses the hero's zebra
+  // drift (Hero.tsx). Runs on every page load, including client-side navigation.
+  const PLAYING = 'data-video-playing';
+
+  function syncPageState() {
+    const anyPlaying = [...document.querySelectorAll<HTMLVideoElement>('[data-feature-video]')].some(
+      (v) => !v.paused && !v.ended,
+    );
+    document.documentElement.toggleAttribute(PLAYING, anyPlaying);
+  }
+
+  function setupFeatureVideos() {
+    for (const video of document.querySelectorAll<HTMLVideoElement>('[data-feature-video]')) {
+      const button = video.parentElement?.querySelector<HTMLButtonElement>('[data-video-toggle]');
+      const sync = () => {
+        button?.toggleAttribute('data-paused', video.paused);
+        button?.setAttribute('aria-label', video.paused ? 'Play video' : 'Pause video');
+        syncPageState();
+      };
+      const toggle = () => {
+        if (video.paused) void video.play();
+        else video.pause();
+      };
+      video.addEventListener('play', sync);
+      video.addEventListener('pause', sync);
+      video.addEventListener('ended', sync);
+      video.addEventListener('click', toggle);
+      button?.addEventListener('click', toggle);
+      sync();
+    }
+  }
+
+  document.addEventListener('astro:page-load', setupFeatureVideos);
+  // Leaving the page stops the video, so the flag must not linger.
+  document.addEventListener('astro:before-swap', () =>
+    document.documentElement.removeAttribute(PLAYING),
+  );
+</script>

@@ -1,0 +1,255 @@
+---
+import type { SplitSection } from '../../lib/content';
+import { ICON_COLOURS, ICONS } from '../../lib/icons';
+
+// Split section: a 50/50 grid with a framed photo on one side and a label,
+// heading, intro, icon cards and a button on the other. Sits straight on the
+// page background (no panel). Edited in Tina under Pages → Sections → Split.
+interface Props {
+  section: SplitSection;
+  /** Used when the button has no link of its own (the hero's Book Now link). */
+  fallbackHref?: string | null;
+}
+const { section, fallbackHref } = Astro.props;
+const {
+  anchor,
+  eyebrow,
+  heading,
+  text,
+  image,
+  imageAlt,
+  imageSide,
+  background,
+  stat,
+  cards = [],
+  action,
+} = section;
+
+const href = action?.href?.trim() || fallbackHref?.trim() || '#';
+const external = /^https?:\/\//.test(href);
+---
+
+<section
+  id={anchor}
+  class:list={['split', { 'photo-right': imageSide === 'right', 'on-lemon': background === 'lemon' }]}
+>
+  {
+    image && (
+      <figure class="media">
+        <img class="photo frame" src={image} alt={imageAlt ?? ''} loading="lazy" decoding="async" />
+        {stat?.value && (
+          <p class="stat frame">
+            <span class="stat-value">{stat.value}</span>
+            {stat.label && <span class="stat-label">{stat.label}</span>}
+          </p>
+        )}
+      </figure>
+    )
+  }
+
+  <div class="copy">
+    {eyebrow && <p class="tag">{eyebrow}</p>}
+    <h2 class="section-title">{heading}</h2>
+    {text && <p class="section-intro">{text}</p>}
+
+    {
+      cards.length > 0 && (
+        <ul class="cards">
+          {cards.map((card, i) => (
+            <li class="card frame frame-flat">
+              <span
+                class="icon-badge"
+                style={`--icon-bg: ${ICON_COLOURS[i % ICON_COLOURS.length]}`}
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d={ICONS[card.icon ?? 'star']} />
+                </svg>
+              </span>
+              <h3>{card.title}</h3>
+              {card.text && <p>{card.text}</p>}
+            </li>
+          ))}
+        </ul>
+      )
+    }
+
+    {
+      action?.label && (
+        <a
+          class="cta"
+          href={href}
+          {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+        >
+          {action.label}
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" />
+          </svg>
+        </a>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(2.5rem, 6vw, 5.5rem);
+  }
+  .photo-right .media {
+    order: 2;
+  }
+  /* On the lemon band the lemon tag would vanish, so it turns white. */
+  .on-lemon .tag {
+    background: #fff;
+  }
+  .on-lemon :global(.section-intro) {
+    color: #000000;
+  }
+
+  /* Photo in the shared frame, kept straight. */
+  .media {
+    position: relative;
+    margin: 0;
+  }
+
+  /* Stat sticker over the photo's bottom corner (opposite the tilt), echoing
+     the credit tag on the feature video. */
+  .stat {
+    --frame-offset: 6px;
+    position: absolute;
+    right: -1rem;
+    bottom: -1.5rem;
+    display: grid;
+    margin: 0;
+    padding: 0.75rem 1.25rem 0.875rem;
+    background: #fff;
+    border-radius: 18px;
+    line-height: 1;
+    text-align: center;
+    transform: rotate(3deg);
+  }
+  .photo-right .stat {
+    right: auto;
+    left: -1rem;
+    transform: rotate(-3deg);
+  }
+  .stat-value {
+    font-size: clamp(1.5rem, 3vw, 2.125rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+  .stat-label {
+    margin-top: 0.3rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .photo {
+    display: block;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+  }
+
+  /* Who it's for: 2×2 cards. */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin: 2rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .card {
+    --frame-radius: 20px;
+    padding: 1.25rem 1.25rem 1.375rem;
+    background: #fff;
+  }
+  .card .icon-badge {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+  .card .icon-badge :global(svg) {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  h3 {
+    margin: 0.875rem 0 0.375rem;
+    font-size: 1.125rem;
+    font-weight: 800;
+    line-height: 1.25;
+  }
+  .card p {
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: #525252;
+  }
+
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+    padding: 0.875rem 1.625rem;
+    border: var(--frame-width) solid var(--frame-color);
+    border-radius: 999px;
+    background: #ff35b3;
+    color: #000000;
+    font-size: 1.0625rem;
+    font-weight: 800;
+    text-decoration: none;
+    box-shadow: 5px 5px 0 var(--frame-color);
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+  .cta svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    fill: currentColor;
+  }
+  .cta:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 7px 7px 0 var(--frame-color);
+  }
+  .cta:active {
+    transform: translate(3px, 3px);
+    box-shadow: 2px 2px 0 var(--frame-color);
+  }
+  .cta:focus-visible {
+    outline: 3px solid #4eb6f7;
+    outline-offset: 3px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cta {
+      transition: none;
+    }
+  }
+
+  @media (max-width: 860px) {
+    .split {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .photo-right .media {
+      order: 0;
+    }
+    .photo {
+      aspect-ratio: 4 / 5;
+    }
+    /* Keep the sticker inside the page gutter on narrow screens. */
+    .stat,
+    .photo-right .stat {
+      right: 0.75rem;
+      left: auto;
+    }
+  }
+  @media (max-width: 520px) {
+    .cards {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

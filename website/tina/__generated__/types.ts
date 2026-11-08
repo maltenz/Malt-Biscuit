@@ -167,6 +167,24 @@ export type CollectionDocumentsArgs = {
 
 export type DocumentNode = Page | Folder;
 
+export type PageHeroPrimaryAction = {
+  __typename?: 'PageHeroPrimaryAction';
+  label?: Maybe<Scalars['String']['output']>;
+  href?: Maybe<Scalars['String']['output']>;
+};
+
+export type PageHeroSecondaryAction = {
+  __typename?: 'PageHeroSecondaryAction';
+  label?: Maybe<Scalars['String']['output']>;
+  href?: Maybe<Scalars['String']['output']>;
+};
+
+export type PageHero = {
+  __typename?: 'PageHero';
+  primaryAction?: Maybe<PageHeroPrimaryAction>;
+  secondaryAction?: Maybe<PageHeroSecondaryAction>;
+};
+
 export type PageSwatchNotes = {
   __typename?: 'PageSwatchNotes';
   swatch: Scalars['String']['output'];
@@ -174,11 +192,89 @@ export type PageSwatchNotes = {
   usage?: Maybe<Scalars['String']['output']>;
 };
 
+export type PageSectionsFeaturePoints = {
+  __typename?: 'PageSectionsFeaturePoints';
+  icon?: Maybe<Scalars['String']['output']>;
+  title: Scalars['String']['output'];
+  text?: Maybe<Scalars['String']['output']>;
+};
+
+export type PageSectionsFeatureVideoTag = {
+  __typename?: 'PageSectionsFeatureVideoTag';
+  label?: Maybe<Scalars['String']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  url?: Maybe<Scalars['String']['output']>;
+};
+
+export type PageSectionsFeatureCreditNames = {
+  __typename?: 'PageSectionsFeatureCreditNames';
+  name: Scalars['String']['output'];
+  url?: Maybe<Scalars['String']['output']>;
+};
+
+export type PageSectionsFeatureCredit = {
+  __typename?: 'PageSectionsFeatureCredit';
+  label?: Maybe<Scalars['String']['output']>;
+  names?: Maybe<Array<Maybe<PageSectionsFeatureCreditNames>>>;
+};
+
+export type PageSectionsFeature = {
+  __typename?: 'PageSectionsFeature';
+  anchor?: Maybe<Scalars['String']['output']>;
+  eyebrow?: Maybe<Scalars['String']['output']>;
+  heading: Scalars['String']['output'];
+  text?: Maybe<Scalars['String']['output']>;
+  points?: Maybe<Array<Maybe<PageSectionsFeaturePoints>>>;
+  video?: Maybe<Scalars['String']['output']>;
+  videoTag?: Maybe<PageSectionsFeatureVideoTag>;
+  image?: Maybe<Scalars['String']['output']>;
+  imageAlt?: Maybe<Scalars['String']['output']>;
+  credit?: Maybe<PageSectionsFeatureCredit>;
+};
+
+export type PageSectionsSplitStat = {
+  __typename?: 'PageSectionsSplitStat';
+  value?: Maybe<Scalars['String']['output']>;
+  label?: Maybe<Scalars['String']['output']>;
+};
+
+export type PageSectionsSplitCards = {
+  __typename?: 'PageSectionsSplitCards';
+  icon?: Maybe<Scalars['String']['output']>;
+  title: Scalars['String']['output'];
+  text?: Maybe<Scalars['String']['output']>;
+};
+
+export type PageSectionsSplitAction = {
+  __typename?: 'PageSectionsSplitAction';
+  label?: Maybe<Scalars['String']['output']>;
+  href?: Maybe<Scalars['String']['output']>;
+};
+
+export type PageSectionsSplit = {
+  __typename?: 'PageSectionsSplit';
+  anchor?: Maybe<Scalars['String']['output']>;
+  eyebrow?: Maybe<Scalars['String']['output']>;
+  heading: Scalars['String']['output'];
+  text?: Maybe<Scalars['String']['output']>;
+  image?: Maybe<Scalars['String']['output']>;
+  imageAlt?: Maybe<Scalars['String']['output']>;
+  imageSide?: Maybe<Scalars['String']['output']>;
+  background?: Maybe<Scalars['String']['output']>;
+  stat?: Maybe<PageSectionsSplitStat>;
+  cards?: Maybe<Array<Maybe<PageSectionsSplitCards>>>;
+  action?: Maybe<PageSectionsSplitAction>;
+};
+
+export type PageSections = PageSectionsFeature | PageSectionsSplit;
+
 export type Page = Node & Document & {
   __typename?: 'Page';
   title: Scalars['String']['output'];
   description: Scalars['String']['output'];
+  hero?: Maybe<PageHero>;
   swatchNotes?: Maybe<Array<Maybe<PageSwatchNotes>>>;
+  sections?: Maybe<Array<Maybe<PageSections>>>;
   body?: Maybe<Scalars['RichText']['output']>;
   id: Scalars['ID']['output'];
   _sys: SystemInfo;
@@ -192,10 +288,102 @@ export type StringFilter = {
   in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
+export type PageHeroPrimaryActionFilter = {
+  label?: InputMaybe<StringFilter>;
+  href?: InputMaybe<StringFilter>;
+};
+
+export type PageHeroSecondaryActionFilter = {
+  label?: InputMaybe<StringFilter>;
+  href?: InputMaybe<StringFilter>;
+};
+
+export type PageHeroFilter = {
+  primaryAction?: InputMaybe<PageHeroPrimaryActionFilter>;
+  secondaryAction?: InputMaybe<PageHeroSecondaryActionFilter>;
+};
+
 export type PageSwatchNotesFilter = {
   swatch?: InputMaybe<StringFilter>;
   role?: InputMaybe<StringFilter>;
   usage?: InputMaybe<StringFilter>;
+};
+
+export type PageSectionsFeaturePointsFilter = {
+  icon?: InputMaybe<StringFilter>;
+  title?: InputMaybe<StringFilter>;
+  text?: InputMaybe<StringFilter>;
+};
+
+export type PageSectionsFeatureVideoTagFilter = {
+  label?: InputMaybe<StringFilter>;
+  name?: InputMaybe<StringFilter>;
+  url?: InputMaybe<StringFilter>;
+};
+
+export type ImageFilter = {
+  startsWith?: InputMaybe<Scalars['String']['input']>;
+  eq?: InputMaybe<Scalars['String']['input']>;
+  exists?: InputMaybe<Scalars['Boolean']['input']>;
+  in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+};
+
+export type PageSectionsFeatureCreditNamesFilter = {
+  name?: InputMaybe<StringFilter>;
+  url?: InputMaybe<StringFilter>;
+};
+
+export type PageSectionsFeatureCreditFilter = {
+  label?: InputMaybe<StringFilter>;
+  names?: InputMaybe<PageSectionsFeatureCreditNamesFilter>;
+};
+
+export type PageSectionsFeatureFilter = {
+  anchor?: InputMaybe<StringFilter>;
+  eyebrow?: InputMaybe<StringFilter>;
+  heading?: InputMaybe<StringFilter>;
+  text?: InputMaybe<StringFilter>;
+  points?: InputMaybe<PageSectionsFeaturePointsFilter>;
+  video?: InputMaybe<StringFilter>;
+  videoTag?: InputMaybe<PageSectionsFeatureVideoTagFilter>;
+  image?: InputMaybe<ImageFilter>;
+  imageAlt?: InputMaybe<StringFilter>;
+  credit?: InputMaybe<PageSectionsFeatureCreditFilter>;
+};
+
+export type PageSectionsSplitStatFilter = {
+  value?: InputMaybe<StringFilter>;
+  label?: InputMaybe<StringFilter>;
+};
+
+export type PageSectionsSplitCardsFilter = {
+  icon?: InputMaybe<StringFilter>;
+  title?: InputMaybe<StringFilter>;
+  text?: InputMaybe<StringFilter>;
+};
+
+export type PageSectionsSplitActionFilter = {
+  label?: InputMaybe<StringFilter>;
+  href?: InputMaybe<StringFilter>;
+};
+
+export type PageSectionsSplitFilter = {
+  anchor?: InputMaybe<StringFilter>;
+  eyebrow?: InputMaybe<StringFilter>;
+  heading?: InputMaybe<StringFilter>;
+  text?: InputMaybe<StringFilter>;
+  image?: InputMaybe<ImageFilter>;
+  imageAlt?: InputMaybe<StringFilter>;
+  imageSide?: InputMaybe<StringFilter>;
+  background?: InputMaybe<StringFilter>;
+  stat?: InputMaybe<PageSectionsSplitStatFilter>;
+  cards?: InputMaybe<PageSectionsSplitCardsFilter>;
+  action?: InputMaybe<PageSectionsSplitActionFilter>;
+};
+
+export type PageSectionsFilter = {
+  feature?: InputMaybe<PageSectionsFeatureFilter>;
+  split?: InputMaybe<PageSectionsSplitFilter>;
 };
 
 export type RichTextFilter = {
@@ -207,7 +395,9 @@ export type RichTextFilter = {
 export type PageFilter = {
   title?: InputMaybe<StringFilter>;
   description?: InputMaybe<StringFilter>;
+  hero?: InputMaybe<PageHeroFilter>;
   swatchNotes?: InputMaybe<PageSwatchNotesFilter>;
+  sections?: InputMaybe<PageSectionsFilter>;
   body?: InputMaybe<RichTextFilter>;
 };
 
@@ -289,16 +479,103 @@ export type DocumentMutation = {
   page?: InputMaybe<PageMutation>;
 };
 
+export type PageHeroPrimaryActionMutation = {
+  label?: InputMaybe<Scalars['String']['input']>;
+  href?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type PageHeroSecondaryActionMutation = {
+  label?: InputMaybe<Scalars['String']['input']>;
+  href?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type PageHeroMutation = {
+  primaryAction?: InputMaybe<PageHeroPrimaryActionMutation>;
+  secondaryAction?: InputMaybe<PageHeroSecondaryActionMutation>;
+};
+
 export type PageSwatchNotesMutation = {
   swatch?: InputMaybe<Scalars['String']['input']>;
   role?: InputMaybe<Scalars['String']['input']>;
   usage?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type PageSectionsFeaturePointsMutation = {
+  icon?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type PageSectionsFeatureVideoTagMutation = {
+  label?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  url?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type PageSectionsFeatureCreditNamesMutation = {
+  name?: InputMaybe<Scalars['String']['input']>;
+  url?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type PageSectionsFeatureCreditMutation = {
+  label?: InputMaybe<Scalars['String']['input']>;
+  names?: InputMaybe<Array<InputMaybe<PageSectionsFeatureCreditNamesMutation>>>;
+};
+
+export type PageSectionsFeatureMutation = {
+  anchor?: InputMaybe<Scalars['String']['input']>;
+  eyebrow?: InputMaybe<Scalars['String']['input']>;
+  heading?: InputMaybe<Scalars['String']['input']>;
+  text?: InputMaybe<Scalars['String']['input']>;
+  points?: InputMaybe<Array<InputMaybe<PageSectionsFeaturePointsMutation>>>;
+  video?: InputMaybe<Scalars['String']['input']>;
+  videoTag?: InputMaybe<PageSectionsFeatureVideoTagMutation>;
+  image?: InputMaybe<Scalars['String']['input']>;
+  imageAlt?: InputMaybe<Scalars['String']['input']>;
+  credit?: InputMaybe<PageSectionsFeatureCreditMutation>;
+};
+
+export type PageSectionsSplitStatMutation = {
+  value?: InputMaybe<Scalars['String']['input']>;
+  label?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type PageSectionsSplitCardsMutation = {
+  icon?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type PageSectionsSplitActionMutation = {
+  label?: InputMaybe<Scalars['String']['input']>;
+  href?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type PageSectionsSplitMutation = {
+  anchor?: InputMaybe<Scalars['String']['input']>;
+  eyebrow?: InputMaybe<Scalars['String']['input']>;
+  heading?: InputMaybe<Scalars['String']['input']>;
+  text?: InputMaybe<Scalars['String']['input']>;
+  image?: InputMaybe<Scalars['String']['input']>;
+  imageAlt?: InputMaybe<Scalars['String']['input']>;
+  imageSide?: InputMaybe<Scalars['String']['input']>;
+  background?: InputMaybe<Scalars['String']['input']>;
+  stat?: InputMaybe<PageSectionsSplitStatMutation>;
+  cards?: InputMaybe<Array<InputMaybe<PageSectionsSplitCardsMutation>>>;
+  action?: InputMaybe<PageSectionsSplitActionMutation>;
+};
+
+export type PageSectionsMutation = {
+  feature?: InputMaybe<PageSectionsFeatureMutation>;
+  split?: InputMaybe<PageSectionsSplitMutation>;
+};
+
 export type PageMutation = {
   title?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
+  hero?: InputMaybe<PageHeroMutation>;
   swatchNotes?: InputMaybe<Array<InputMaybe<PageSwatchNotesMutation>>>;
+  sections?: InputMaybe<Array<InputMaybe<PageSectionsMutation>>>;
   body?: InputMaybe<Scalars['RichText']['input']>;
 };
 
@@ -309,10 +586,102 @@ export type StringFilter = {
   in?: Array<string | null | undefined> | null | undefined;
 };
 
+export type PageHeroPrimaryActionFilter = {
+  label?: StringFilter | null | undefined;
+  href?: StringFilter | null | undefined;
+};
+
+export type PageHeroSecondaryActionFilter = {
+  label?: StringFilter | null | undefined;
+  href?: StringFilter | null | undefined;
+};
+
+export type PageHeroFilter = {
+  primaryAction?: PageHeroPrimaryActionFilter | null | undefined;
+  secondaryAction?: PageHeroSecondaryActionFilter | null | undefined;
+};
+
 export type PageSwatchNotesFilter = {
   swatch?: StringFilter | null | undefined;
   role?: StringFilter | null | undefined;
   usage?: StringFilter | null | undefined;
+};
+
+export type PageSectionsFeaturePointsFilter = {
+  icon?: StringFilter | null | undefined;
+  title?: StringFilter | null | undefined;
+  text?: StringFilter | null | undefined;
+};
+
+export type PageSectionsFeatureVideoTagFilter = {
+  label?: StringFilter | null | undefined;
+  name?: StringFilter | null | undefined;
+  url?: StringFilter | null | undefined;
+};
+
+export type ImageFilter = {
+  startsWith?: string | null | undefined;
+  eq?: string | null | undefined;
+  exists?: boolean | null | undefined;
+  in?: Array<string | null | undefined> | null | undefined;
+};
+
+export type PageSectionsFeatureCreditNamesFilter = {
+  name?: StringFilter | null | undefined;
+  url?: StringFilter | null | undefined;
+};
+
+export type PageSectionsFeatureCreditFilter = {
+  label?: StringFilter | null | undefined;
+  names?: PageSectionsFeatureCreditNamesFilter | null | undefined;
+};
+
+export type PageSectionsFeatureFilter = {
+  anchor?: StringFilter | null | undefined;
+  eyebrow?: StringFilter | null | undefined;
+  heading?: StringFilter | null | undefined;
+  text?: StringFilter | null | undefined;
+  points?: PageSectionsFeaturePointsFilter | null | undefined;
+  video?: StringFilter | null | undefined;
+  videoTag?: PageSectionsFeatureVideoTagFilter | null | undefined;
+  image?: ImageFilter | null | undefined;
+  imageAlt?: StringFilter | null | undefined;
+  credit?: PageSectionsFeatureCreditFilter | null | undefined;
+};
+
+export type PageSectionsSplitStatFilter = {
+  value?: StringFilter | null | undefined;
+  label?: StringFilter | null | undefined;
+};
+
+export type PageSectionsSplitCardsFilter = {
+  icon?: StringFilter | null | undefined;
+  title?: StringFilter | null | undefined;
+  text?: StringFilter | null | undefined;
+};
+
+export type PageSectionsSplitActionFilter = {
+  label?: StringFilter | null | undefined;
+  href?: StringFilter | null | undefined;
+};
+
+export type PageSectionsSplitFilter = {
+  anchor?: StringFilter | null | undefined;
+  eyebrow?: StringFilter | null | undefined;
+  heading?: StringFilter | null | undefined;
+  text?: StringFilter | null | undefined;
+  image?: ImageFilter | null | undefined;
+  imageAlt?: StringFilter | null | undefined;
+  imageSide?: StringFilter | null | undefined;
+  background?: StringFilter | null | undefined;
+  stat?: PageSectionsSplitStatFilter | null | undefined;
+  cards?: PageSectionsSplitCardsFilter | null | undefined;
+  action?: PageSectionsSplitActionFilter | null | undefined;
+};
+
+export type PageSectionsFilter = {
+  feature?: PageSectionsFeatureFilter | null | undefined;
+  split?: PageSectionsSplitFilter | null | undefined;
 };
 
 export type RichTextFilter = {
@@ -324,18 +693,26 @@ export type RichTextFilter = {
 export type PageFilter = {
   title?: StringFilter | null | undefined;
   description?: StringFilter | null | undefined;
+  hero?: PageHeroFilter | null | undefined;
   swatchNotes?: PageSwatchNotesFilter | null | undefined;
+  sections?: PageSectionsFilter | null | undefined;
   body?: RichTextFilter | null | undefined;
 };
 
-export type PagePartsFragment = { __typename: 'Page', title: string, description: string, body: TinaMarkdownContent | null, swatchNotes: Array<{ __typename: 'PageSwatchNotes', swatch: string, role: string | null, usage: string | null } | null> | null };
+export type PagePartsFragment = { __typename: 'Page', title: string, description: string, body: TinaMarkdownContent | null, hero: { __typename: 'PageHero', primaryAction: { __typename: 'PageHeroPrimaryAction', label: string | null, href: string | null } | null, secondaryAction: { __typename: 'PageHeroSecondaryAction', label: string | null, href: string | null } | null } | null, swatchNotes: Array<{ __typename: 'PageSwatchNotes', swatch: string, role: string | null, usage: string | null } | null> | null, sections: Array<
+    | { __typename: 'PageSectionsFeature', anchor: string | null, eyebrow: string | null, heading: string, text: string | null, video: string | null, image: string | null, imageAlt: string | null, points: Array<{ __typename: 'PageSectionsFeaturePoints', icon: string | null, title: string, text: string | null } | null> | null, videoTag: { __typename: 'PageSectionsFeatureVideoTag', label: string | null, name: string | null, url: string | null } | null, credit: { __typename: 'PageSectionsFeatureCredit', label: string | null, names: Array<{ __typename: 'PageSectionsFeatureCreditNames', name: string, url: string | null } | null> | null } | null }
+    | { __typename: 'PageSectionsSplit', anchor: string | null, eyebrow: string | null, heading: string, text: string | null, image: string | null, imageAlt: string | null, imageSide: string | null, background: string | null, stat: { __typename: 'PageSectionsSplitStat', value: string | null, label: string | null } | null, cards: Array<{ __typename: 'PageSectionsSplitCards', icon: string | null, title: string, text: string | null } | null> | null, action: { __typename: 'PageSectionsSplitAction', label: string | null, href: string | null } | null }
+   | null> | null };
 
 export type PageQueryVariables = Exact<{
   relativePath: string;
 }>;
 
 
-export type PageQuery = { page: { __typename: 'Page', id: string, title: string, description: string, body: TinaMarkdownContent | null, _sys: { filename: string, basename: string, hasReferences: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, swatchNotes: Array<{ __typename: 'PageSwatchNotes', swatch: string, role: string | null, usage: string | null } | null> | null } };
+export type PageQuery = { page: { __typename: 'Page', id: string, title: string, description: string, body: TinaMarkdownContent | null, _sys: { filename: string, basename: string, hasReferences: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, hero: { __typename: 'PageHero', primaryAction: { __typename: 'PageHeroPrimaryAction', label: string | null, href: string | null } | null, secondaryAction: { __typename: 'PageHeroSecondaryAction', label: string | null, href: string | null } | null } | null, swatchNotes: Array<{ __typename: 'PageSwatchNotes', swatch: string, role: string | null, usage: string | null } | null> | null, sections: Array<
+      | { __typename: 'PageSectionsFeature', anchor: string | null, eyebrow: string | null, heading: string, text: string | null, video: string | null, image: string | null, imageAlt: string | null, points: Array<{ __typename: 'PageSectionsFeaturePoints', icon: string | null, title: string, text: string | null } | null> | null, videoTag: { __typename: 'PageSectionsFeatureVideoTag', label: string | null, name: string | null, url: string | null } | null, credit: { __typename: 'PageSectionsFeatureCredit', label: string | null, names: Array<{ __typename: 'PageSectionsFeatureCreditNames', name: string, url: string | null } | null> | null } | null }
+      | { __typename: 'PageSectionsSplit', anchor: string | null, eyebrow: string | null, heading: string, text: string | null, image: string | null, imageAlt: string | null, imageSide: string | null, background: string | null, stat: { __typename: 'PageSectionsSplitStat', value: string | null, label: string | null } | null, cards: Array<{ __typename: 'PageSectionsSplitCards', icon: string | null, title: string, text: string | null } | null> | null, action: { __typename: 'PageSectionsSplitAction', label: string | null, href: string | null } | null }
+     | null> | null } };
 
 export type PageConnectionQueryVariables = Exact<{
   before?: string | null | undefined;
@@ -347,18 +724,93 @@ export type PageConnectionQueryVariables = Exact<{
 }>;
 
 
-export type PageConnectionQuery = { pageConnection: { totalCount: number, pageInfo: { hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges: Array<{ cursor: string, node: { __typename: 'Page', id: string, title: string, description: string, body: TinaMarkdownContent | null, _sys: { filename: string, basename: string, hasReferences: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, swatchNotes: Array<{ __typename: 'PageSwatchNotes', swatch: string, role: string | null, usage: string | null } | null> | null } | null } | null> | null } };
+export type PageConnectionQuery = { pageConnection: { totalCount: number, pageInfo: { hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges: Array<{ cursor: string, node: { __typename: 'Page', id: string, title: string, description: string, body: TinaMarkdownContent | null, _sys: { filename: string, basename: string, hasReferences: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, hero: { __typename: 'PageHero', primaryAction: { __typename: 'PageHeroPrimaryAction', label: string | null, href: string | null } | null, secondaryAction: { __typename: 'PageHeroSecondaryAction', label: string | null, href: string | null } | null } | null, swatchNotes: Array<{ __typename: 'PageSwatchNotes', swatch: string, role: string | null, usage: string | null } | null> | null, sections: Array<
+          | { __typename: 'PageSectionsFeature', anchor: string | null, eyebrow: string | null, heading: string, text: string | null, video: string | null, image: string | null, imageAlt: string | null, points: Array<{ __typename: 'PageSectionsFeaturePoints', icon: string | null, title: string, text: string | null } | null> | null, videoTag: { __typename: 'PageSectionsFeatureVideoTag', label: string | null, name: string | null, url: string | null } | null, credit: { __typename: 'PageSectionsFeatureCredit', label: string | null, names: Array<{ __typename: 'PageSectionsFeatureCreditNames', name: string, url: string | null } | null> | null } | null }
+          | { __typename: 'PageSectionsSplit', anchor: string | null, eyebrow: string | null, heading: string, text: string | null, image: string | null, imageAlt: string | null, imageSide: string | null, background: string | null, stat: { __typename: 'PageSectionsSplitStat', value: string | null, label: string | null } | null, cards: Array<{ __typename: 'PageSectionsSplitCards', icon: string | null, title: string, text: string | null } | null> | null, action: { __typename: 'PageSectionsSplitAction', label: string | null, href: string | null } | null }
+         | null> | null } | null } | null> | null } };
 
 export const PagePartsFragmentDoc = gql`
     fragment PageParts on Page {
   __typename
   title
   description
+  hero {
+    __typename
+    primaryAction {
+      __typename
+      label
+      href
+    }
+    secondaryAction {
+      __typename
+      label
+      href
+    }
+  }
   swatchNotes {
     __typename
     swatch
     role
     usage
+  }
+  sections {
+    __typename
+    ... on PageSectionsFeature {
+      anchor
+      eyebrow
+      heading
+      text
+      points {
+        __typename
+        icon
+        title
+        text
+      }
+      video
+      videoTag {
+        __typename
+        label
+        name
+        url
+      }
+      image
+      imageAlt
+      credit {
+        __typename
+        label
+        names {
+          __typename
+          name
+          url
+        }
+      }
+    }
+    ... on PageSectionsSplit {
+      anchor
+      eyebrow
+      heading
+      text
+      image
+      imageAlt
+      imageSide
+      background
+      stat {
+        __typename
+        value
+        label
+      }
+      cards {
+        __typename
+        icon
+        title
+        text
+      }
+      action {
+        __typename
+        label
+        href
+      }
+    }
   }
   body
 }

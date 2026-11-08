@@ -1,0 +1,18 @@
+{
+  "footer": {
+    "tagline": "Melodic House DJ based in Hawkes Bay",
+    "cta": {
+      "label": "Book a popup",
+      "href": "/#book"
+    },
+    "about": {
+      "logo": "/aimii-icon.png",
+      "heading": "Digital services",
+      "text": "Away from the decks, Malt Biscuit works in tech and marketing. Events, venues and brands can get help with the digital side too: the tech behind it, the marketing, and getting the word out.",
+      "link": {
+        "label": "Visit aimii.io",
+        "href": "https://aimii.io"
+      }
+    }
+  }
+}

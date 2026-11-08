@@ -1,24 +1,194 @@
 ---
-import Welcome from '../components/Welcome';
+import Hero from '../components/Hero';
+import Feature from '../components/sections/Feature.astro';
+import Split from '../components/sections/Split.astro';
+import Sponsors from '../components/sections/Sponsors.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getPage } from '../lib/content';
+import { getPage, type Section } from '../lib/content';
 
+// Title, description and hero buttons feed the hero. Below it, the page's Tina
+// "Sections" render in order (content/pages/home.md): consecutive panel-style
+// sections (Feature) share a white panel, while open sections (Split) sit
+// straight on the page background. The rich-text Body, if any, goes last.
 const home = getPage('home');
-const title = home?.title ?? 'maltbiscuit';
-const description = home?.description ?? 'An Astro + TinaCMS + MUI starter on Cloudflare.';
+const title = home?.title ?? 'Malt Biscuit';
+const description = home?.description ?? 'Melodic House DJ based in Hawkes Bay';
+const Content = home?.Content;
+const sections = home?.sections ?? [];
+const bookHref = home?.hero?.primaryAction?.href;
+
+/** Which sections go inside a white panel; the rest sit on the background. */
+const inPanel = (section: Section) => section._template === 'feature';
+
+/** Full-width colour band an open section sits on, if any. */
+const bandOf = (section: Section): 'lemon' | 'black' | undefined => {
+  if (section._template === 'sponsors') return 'black';
+  if (section._template === 'split' && section.background === 'lemon') return 'lemon';
+  return undefined;
+};
+
+type Group = { panel: true; sections: Section[] } | { panel: false; section: Section };
+const groups: Group[] = [];
+for (const section of sections) {
+  const last = groups.at(-1);
+  if (inPanel(section) && last?.panel) last.sections.push(section);
+  else if (inPanel(section)) groups.push({ panel: true, sections: [section] });
+  else groups.push({ panel: false, section });
+}
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} overlayNav>
   <main>
-    <Welcome title={title} description={description} client:load />
+    <Hero
+      title={title}
+      description={description}
+      primaryAction={home?.hero?.primaryAction}
+      secondaryAction={home?.hero?.secondaryAction}
+    />
+
+    <div class="page-grid">
+      {
+        groups.map((group) =>
+          group.panel ? (
+            <article class="panel frame frame-flat">
+              <div class="panel-grid">
+                {group.sections.map(
+                  (section) => section._template === 'feature' && <Feature section={section} />,
+                )}
+              </div>
+            </article>
+          ) : (
+            <div
+              class:list={[
+                'open',
+                bandOf(group.section) && ['band', `band-${bandOf(group.section)}`],
+              ]}
+            >
+              <div class="open-inner">
+                {group.section._template === 'split' && (
+                  <Split section={group.section} fallbackHref={bookHref} />
+                )}
+                {group.section._template === 'sponsors' && <Sponsors section={group.section} />}
+              </div>
+            </div>
+          ),
+        )
+      }
+      {
+        home?.hasBody && Content && (
+          <article class="panel frame frame-flat">
+            <div class="panel-grid prose">
+              <Content />
+            </div>
+          </article>
+        )
+      }
+    </div>
   </main>
 </BaseLayout>
 
 <style>
-  main {
+  /* Page grid: gutters either side, content column up to 1120px wide. */
+  .page-grid {
     display: grid;
-    place-items: center;
-    min-height: calc(100dvh - 56px);
-    padding: 1.5rem;
+    grid-template-columns:
+      [full-start] minmax(var(--gutter), 1fr)
+      [content-start] minmax(0, 1120px)
+      [content-end] minmax(var(--gutter), 1fr)
+      [full-end];
+    /* Space between sections (and below the last one). */
+    --section-gap: clamp(3rem, 6vw, 5rem);
+    row-gap: var(--section-gap);
+    padding-bottom: var(--section-gap);
+    /* Same line as the frames: along the hero's bottom edge (the panel sits
+       over it) and closing off the section at the bottom. */
+    border-block: var(--frame-width) solid var(--frame-color);
+  }
+  .page-grid > * {
+    grid-column: content;
+  }
+
+  /* White panel. The first one rides up over the bottom of the hero. */
+  .panel {
+    position: relative;
+    z-index: 1;
+    padding: clamp(2rem, 6vw, 4.5rem) clamp(1.25rem, 5vw, 4rem);
+    background: #fff;
+    /* Border and corners: the global .frame class, flat (no offset shadow). */
+  }
+  .panel:first-child {
+    margin-top: calc(-1 * var(--hero-overlap));
+  }
+  /* An open section first in line gets normal spacing below the hero. */
+  .open:first-child {
+    margin-top: var(--section-gap);
+  }
+
+  /* Band: a full-width coloured strip (a lemon Split, the black Sponsors),
+     edge to edge with black lines top and bottom; content keeps the column. */
+  .page-grid > .band {
+    grid-column: full;
+    padding-block: clamp(3.5rem, 7vw, 5.5rem);
+    border-block: var(--frame-width) solid var(--frame-color);
+  }
+  .page-grid > .band-lemon {
+    background: #fff02e;
+  }
+  .page-grid > .band-black {
+    background: #000;
+    color: #fff;
+  }
+  /* Bands back to back butt together: no gap, no doubled line. */
+  .page-grid > .band + .band {
+    margin-top: calc(-1 * var(--section-gap));
+    border-top: 0;
+  }
+  /* Downward notch at the top centre: the light page background pointing into
+     the band, outlined with the same black line. Two 45° triangles (a
+     black one with a background-coloured one inset by the 3px border) sit
+     over the band's top border so the outline joins it seamlessly. */
+  .page-grid > .band {
+    position: relative;
+  }
+  .page-grid > .band-lemon::before {
+    content: '';
+    position: absolute;
+    top: calc(-1 * var(--frame-width));
+    left: 50%;
+    width: 64px;
+    height: 32px;
+    translate: -50% 0;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 32'%3E%3Cpath d='M0 0H64L32 32Z' fill='%23000000'/%3E%3Cpath d='M4.24 0H59.76L32 27.76Z' fill='%23f5f5f5'/%3E%3C/svg%3E")
+      no-repeat center / 100% 100%;
+    pointer-events: none;
+  }
+
+  .band .open-inner {
+    width: min(1120px, 100% - 2 * var(--gutter));
+    margin-inline: auto;
+  }
+  /* Last on the page: sit flush on the section's bottom line, no gap or double line. */
+  .page-grid > .band:last-child {
+    margin-bottom: calc(-1 * var(--section-gap));
+    border-bottom: 0;
+  }
+  .page-grid > .band:first-child {
+    margin-top: 0;
+    border-top: 0;
+  }
+
+  /* Inside a panel: a readable text column, centred. Children sit in the
+     middle column; add `class="wide"` to an element to span the full panel.
+     Several sections in one panel are spaced apart. */
+  .panel-grid {
+    display: grid;
+    grid-template-columns: [wide-start] 1fr [text-start] min(68ch, 100%) [text-end] 1fr [wide-end];
+    row-gap: clamp(4rem, 8vw, 6rem);
+  }
+  .panel-grid > :global(*) {
+    grid-column: text;
+  }
+  .panel-grid > :global(.wide) {
+    grid-column: wide;
   }
 </style>

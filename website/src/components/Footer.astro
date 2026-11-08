@@ -1,0 +1,202 @@
+---
+import { settings } from '../lib/settings';
+import Logo from './Logo.astro';
+
+// Site footer, on every page (BaseLayout). Content comes from Tina's
+// "Site settings" (content/settings/site.json).
+const footer = settings.footer ?? {};
+const about = footer.about;
+const aboutLink = about?.link?.label && about.link.href ? about.link : undefined;
+const external = (href = '') => /^https?:\/\//.test(href);
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="inner">
+    <div class="brand">
+      <a href="/" class="brand-link" aria-label="Malt Biscuit, home">
+        <Logo size={56} />
+        <span class="font-brand name">Malt Biscuit</span>
+      </a>
+      {footer.tagline && <p class="tagline">{footer.tagline}</p>}
+      {
+        footer.cta?.label && (
+          <a class="cta" href={footer.cta.href || '/#book'}>
+            {footer.cta.label}
+          </a>
+        )
+      }
+    </div>
+
+    {
+      (about?.heading || about?.text) && (
+        <section class="about" aria-labelledby="footer-about">
+          {about.logo &&
+            (aboutLink ? (
+              <a
+                class="about-logo"
+                href={aboutLink.href}
+                {...(external(aboutLink.href)
+                  ? { target: '_blank', rel: 'noopener noreferrer' }
+                  : {})}
+              >
+                <img src={about.logo} alt={aboutLink.label ?? ''} loading="lazy" decoding="async" />
+              </a>
+            ) : (
+              <img class="about-logo" src={about.logo} alt="" loading="lazy" decoding="async" />
+            ))}
+          {about.heading && <h2 id="footer-about">{about.heading}</h2>}
+          {about.text && <p>{about.text}</p>}
+          {aboutLink && (
+            <a
+              class="about-link"
+              href={aboutLink.href}
+              {...(external(aboutLink.href)
+                ? { target: '_blank', rel: 'noopener noreferrer' }
+                : {})}
+            >
+              {aboutLink.label} <span aria-hidden="true">→</span>
+            </a>
+          )}
+        </section>
+      )
+    }
+  </div>
+
+  <div class="bottom">
+    <p>© {year} Malt Biscuit</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: #000;
+    color: #fff;
+    /* Faint line separating it from a black band above (e.g. Sponsors). */
+    border-top: 1px solid rgb(255 255 255 / 0.18);
+  }
+
+  .inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 2.5rem clamp(2rem, 5vw, 4rem);
+    width: min(1120px, 100% - 2 * var(--gutter));
+    margin-inline: auto;
+    padding-block: clamp(3rem, 6vw, 4.5rem);
+  }
+
+  .brand-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.875rem;
+    color: inherit;
+    text-decoration: none;
+  }
+  .name {
+    font-size: 1.75rem;
+    line-height: 1;
+  }
+  .tagline {
+    max-width: 22rem;
+    margin: 1rem 0 0;
+    color: rgb(255 255 255 / 0.7);
+    line-height: 1.6;
+  }
+  .cta {
+    display: inline-block;
+    margin-top: 1.5rem;
+    padding: 0.625rem 1.25rem;
+    border: var(--frame-width) solid #fff;
+    border-radius: 999px;
+    background: #fff02e;
+    color: #000;
+    font-weight: 800;
+    text-decoration: none;
+    box-shadow: 4px 4px 0 #fff;
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+  .cta:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 #fff;
+  }
+
+  h2 {
+    margin: 0 0 1rem;
+    color: #fff02e;
+    font-size: 0.8125rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .about {
+    max-width: 30rem;
+  }
+  /* Partner logo above the heading; links to the same address as the text link. */
+  .about-logo {
+    display: inline-block;
+    margin-bottom: 1.25rem;
+    border-radius: 6px;
+  }
+  .about-logo img,
+  img.about-logo {
+    display: block;
+    width: auto;
+    height: 2.75rem;
+  }
+  a.about-logo {
+    transition: opacity 0.15s ease;
+  }
+  a.about-logo:hover {
+    opacity: 0.85;
+  }
+  .about p {
+    margin: 0;
+    color: rgb(255 255 255 / 0.8);
+    line-height: 1.7;
+  }
+  .about-link {
+    display: inline-block;
+    margin-top: 1rem;
+    color: #fff;
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-color: #ff35b3;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+  .about-link:hover {
+    color: #fff02e;
+  }
+
+  a:focus-visible {
+    outline: 3px solid #ff35b3;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  .bottom {
+    width: min(1120px, 100% - 2 * var(--gutter));
+    margin-inline: auto;
+    padding-block: 1.25rem;
+    border-top: 1px solid rgb(255 255 255 / 0.18);
+    color: rgb(255 255 255 / 0.55);
+    font-size: 0.875rem;
+  }
+  .bottom p {
+    margin: 0;
+  }
+
+  @media (max-width: 760px) {
+    .inner {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cta {
+      transition: none;
+    }
+  }
+</style>

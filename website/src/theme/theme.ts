@@ -5,7 +5,7 @@ import { createTheme } from '@mui/material/styles';
 //   <Button color="flamingo">   sx={{ bgcolor: 'sky.main', color: 'sky.contrastText' }}
 //   theme.palette.mint.dark
 export const swatches = {
-  midnight: '#09203B',
+  black: '#000000',
   sky: '#4EB6F7',
   mint: '#11ED7F',
   lemon: '#FFF02E',
@@ -40,14 +40,14 @@ declare module '@mui/material/SvgIcon' {
 }
 
 const base = createTheme();
-const midnight = base.palette.augmentColor({
-  color: { main: swatches.midnight, contrastText: '#ffffff' },
-  name: 'midnight',
+const black = base.palette.augmentColor({
+  color: { main: swatches.black, contrastText: '#ffffff' },
+  name: 'black',
 });
-// The four bright swatches are too light for white text, so they use midnight.
-const bright = (name: Exclude<SwatchName, 'midnight'>) =>
+// The four bright swatches are too light for white text, so they use black.
+const bright = (name: Exclude<SwatchName, 'black'>) =>
   base.palette.augmentColor({
-    color: { main: swatches[name], contrastText: swatches.midnight },
+    color: { main: swatches[name], contrastText: swatches.black },
     name,
   });
 
@@ -57,7 +57,7 @@ const theme = createTheme({
   cssVariables: true,
   palette: {
     mode: 'light',
-    midnight,
+    black,
     sky: bright('sky'),
     mint: bright('mint'),
     lemon: bright('lemon'),
@@ -66,8 +66,8 @@ const theme = createTheme({
     // two still need a value; they simply alias the named swatches.
     primary: bright('sky'),
     secondary: bright('flamingo'),
-    text: { primary: swatches.midnight, secondary: '#4a5a6e' },
-    background: { default: '#f5f8fb', paper: '#ffffff' },
+    text: { primary: swatches.black, secondary: '#525252' },
+    background: { default: '#f5f5f5', paper: '#ffffff' },
   },
   typography: {
     fontFamily: 'Inter, ui-sans-serif, system-ui, sans-serif',

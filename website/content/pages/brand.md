@@ -2,21 +2,21 @@
 title: Brand
 description: The maltbiscuit colour palette, with live MUI examples and usage guidance.
 swatchNotes:
-- swatch: midnight
-  role: Ink
-  usage: Body text, headings and dark surfaces. Use white text on midnight.
-- swatch: sky
-  role: Primary
-  usage: The default action colour. Buttons, links and focus states use sky unless told otherwise.
-- swatch: mint
-  role: Positive
-  usage: Success states, confirmations and "go" actions.
-- swatch: lemon
-  role: Highlight
-  usage: Badges, highlights and warnings. Too light to carry text on its own background, so pair it with midnight text.
-- swatch: flamingo
-  role: Accent
-  usage: Secondary actions and moments that should pop. Use sparingly, at most one flamingo element per view.
+  - swatch: black
+    role: Ink
+    usage: Body text, headings and dark surfaces. Use white text on black.
+  - swatch: sky
+    role: Primary
+    usage: The default action colour. Buttons, links and focus states use sky unless told otherwise.
+  - swatch: mint
+    role: Positive
+    usage: Success states, confirmations and "go" actions.
+  - swatch: lemon
+    role: Highlight
+    usage: Badges, highlights and warnings. Too light to carry text on its own background, so pair it with black text.
+  - swatch: flamingo
+    role: Accent
+    usage: Secondary actions and moments that should pop. Use sparingly, at most one flamingo element per view.
 ---
 
 ## Using the palette
@@ -33,7 +33,7 @@ Pass a colour name as a component's `color` prop:
 Use the dotted path in `sx`:
 
 ```tsx
-<Box sx={{ bgcolor: 'midnight.main', color: 'midnight.contrastText' }} />
+<Box sx={{ bgcolor: 'black.main', color: 'black.contrastText' }} />
 ```
 
 Read it from the theme in `tss-react` styles:
@@ -46,7 +46,7 @@ const useStyles = makeStyles()((theme) => ({
 
 ## Text on colour
 
-Always use the colour's `contrastText` for text placed on it. Midnight takes white text; the four bright colours take midnight text. The widget above shows each pairing's contrast ratio: 4.5:1 or higher passes WCAG AA for body text.
+Always use the colour's `contrastText` for text placed on it. Black takes white text; the four bright colours take black text. The widget above shows each pairing's contrast ratio: 4.5:1 or higher passes WCAG AA for body text.
 
 ## Changing colours
 

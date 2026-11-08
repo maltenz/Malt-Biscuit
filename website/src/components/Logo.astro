@@ -1,0 +1,35 @@
+---
+// Placeholder logo: a round biscuit (lemon, black rim, docking holes).
+// Swap the SVG for the real logo when there is one; keep the viewBox square.
+interface Props {
+  /** Rendered width and height in px. */
+  size?: number;
+  class?: string;
+}
+const { size = 40, class: className } = Astro.props;
+
+// Docking holes: one in the middle, six in a ring around it.
+const holes = [[24, 24], ...Array.from({ length: 6 }, (_, i) => {
+  const a = (Math.PI / 3) * i - Math.PI / 2;
+  return [24 + Math.cos(a) * 10.5, 24 + Math.sin(a) * 10.5];
+})];
+---
+
+<svg
+  class:list={['logo', className]}
+  width={size}
+  height={size}
+  viewBox="0 0 48 48"
+  aria-hidden="true"
+  focusable="false"
+>
+  <circle cx="24" cy="24" r="22.5" fill="#FFF02E" stroke="#000000" stroke-width="3" />
+  {holes.map(([x, y]) => <circle cx={x.toFixed(2)} cy={y.toFixed(2)} r="2.4" fill="#000000" />)}
+</svg>
+
+<style>
+  .logo {
+    display: block;
+    flex: none;
+  }
+</style>

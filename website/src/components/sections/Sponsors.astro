@@ -1,0 +1,111 @@
+---
+import type { SponsorsSection } from '../../lib/content';
+
+// Sponsors section: a heading tag and one cell per sponsor logo, two columns
+// (one on phones). Rendered on a black full-width band by the page (see
+// index.astro). Edited in Tina under Pages → Sections → Sponsors.
+interface Props {
+  section: SponsorsSection;
+}
+const { anchor, heading, sponsors = [] } = Astro.props.section;
+const list = sponsors.filter((s) => s.name);
+---
+
+<section id={anchor} class="sponsors" aria-labelledby={anchor ? `${anchor}-heading` : undefined}>
+  {heading && <h2 class="tag" id={anchor ? `${anchor}-heading` : undefined}>{heading}</h2>}
+
+  <ul class="grid">
+    {
+      list.map((sponsor) => {
+        const inner = sponsor.logo ? (
+          <img src={sponsor.logo} alt={sponsor.name} loading="lazy" decoding="async" />
+        ) : (
+          <span class="name">{sponsor.name}</span>
+        );
+        return (
+          <li>
+            {sponsor.url ? (
+              <a class="cell" href={sponsor.url} target="_blank" rel="noopener noreferrer">
+                {inner}
+              </a>
+            ) : (
+              <div class="cell">{inner}</div>
+            )}
+          </li>
+        );
+      })
+    }
+  </ul>
+</section>
+
+<style>
+  .sponsors {
+    display: grid;
+    justify-items: center;
+    color: #fff;
+  }
+
+  /* The global .tag, inverted for the black band. */
+  .tag {
+    margin: 0 0 2rem;
+    background: #fff;
+    color: #000;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .cell {
+    display: grid;
+    place-items: center;
+    min-height: 9rem;
+    padding: 2rem;
+    border: var(--frame-width) solid #fff;
+    border-radius: var(--frame-radius);
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 0.15s ease;
+  }
+  a.cell:hover,
+  a.cell:focus-visible {
+    border-color: #fff02e;
+  }
+  a.cell:focus-visible {
+    outline: 3px solid #ff35b3;
+    outline-offset: 3px;
+  }
+  img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: 3.5rem;
+  }
+  .name {
+    font-size: 1.5rem;
+    font-weight: 800;
+  }
+
+  @media (max-width: 600px) {
+    .grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .cell {
+      min-height: 7rem;
+    }
+    img {
+      height: 2.75rem;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cell {
+      transition: none;
+    }
+  }
+</style>
