@@ -144,6 +144,19 @@ const contact = {
     padding-top: env(safe-area-inset-top, 0px);
   }
 
+  /* Phones: logo centred on top, Contact and Book Now centred under it. */
+  @media (max-width: 600px) {
+    .site-nav,
+    .site-nav.overlay {
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 1.5rem;
+      height: auto;
+      padding: calc(2rem + env(safe-area-inset-top, 0px)) 1rem 0;
+    }
+    .site-nav .nav-actions { gap: 1.5rem; }
+  }
+
   /* Frame: thick black border, rounded corners and a hard offset shadow.
      Add class="frame" to any element to reuse it (the hero card and the main
      panel both do). Override the variables on an element to tweak one frame,

@@ -77,15 +77,16 @@ const Section = styled('section')(({ theme }) => ({
   'html[data-video-playing] &::before': {
     animationPlayState: 'paused',
   },
+  // Phones: the nav stacks (logo, then links), so start below it with room to breathe.
   [theme.breakpoints.down('sm')]: {
-    padding: `${theme.spacing(10)} ${theme.spacing(2)} calc(var(--hero-overlap) + ${theme.spacing(6)})`,
+    padding: `calc(240px + env(safe-area-inset-top, 0px)) ${theme.spacing(3)} calc(var(--hero-overlap) + ${theme.spacing(6)})`,
   },
   // Subpages: a short band, just tall enough for the nav and the title.
   '&.compact': {
     minHeight: 0,
     padding: `calc(104px + ${theme.spacing(4)}) ${theme.spacing(3)} calc(var(--hero-overlap) + ${theme.spacing(5)})`,
     [theme.breakpoints.down('sm')]: {
-      padding: `calc(96px + ${theme.spacing(2)}) ${theme.spacing(2)} calc(var(--hero-overlap) + ${theme.spacing(4)})`,
+      padding: `calc(240px + env(safe-area-inset-top, 0px)) ${theme.spacing(3)} calc(var(--hero-overlap) + ${theme.spacing(4)})`,
     },
   },
 }));
@@ -261,7 +262,7 @@ const Avatar = styled('button')(({ theme }) => ({
     fontSize: 'calc(var(--circle) * 0.12)',
     [theme.breakpoints.down('md')]: { fontSize: 'calc(var(--size) * 0.2)' },
   },
-  [theme.breakpoints.down('sm')]: { '--size': '128px' },
+  [theme.breakpoints.down('sm')]: { '--size': '192px' },
   '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
 }));
 
@@ -282,7 +283,7 @@ const Group = styled('div')(({ theme }) => ({
   gap: 'clamp(24px, 3vw, 48px)',
   [theme.breakpoints.down('md')]: {
     flexDirection: 'column-reverse',
-    gap: theme.spacing(3),
+    gap: theme.spacing(4),
   },
   // Phones: the record becomes a full-width card; the photo stays centred.
   [theme.breakpoints.down('sm')]: {
