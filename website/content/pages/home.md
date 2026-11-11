@@ -16,7 +16,7 @@ sections:
     points:
       - icon: speaker
         title: Custom-designed sound system
-        text: Designed for Malt Biscuit's popups by StreetSoundz and ZeroFlex.
+        text: Designed for Malt Biscuit's popups by StreetSoundz and Sample Company.
       - icon: equalizer
         title: Better than club sound
         text: High-quality audio gear that goes beyond what you get in most clubs.
@@ -35,7 +35,7 @@ sections:
       names:
         - name: StreetSoundz
           url: ''
-        - name: ZeroFlex
+        - name: Sample Company
           url: ''
     _template: feature
   - anchor: book
@@ -69,8 +69,8 @@ sections:
       - name: StreetSoundz
         logo: /images/sponsors/streetsoundz.svg
         url: ''
-      - name: ZeroFlex
-        logo: /images/sponsors/zeroflex.png
+      - name: Sample Company
+        logo: /images/sponsors/sample-company.svg
         url: ''
     _template: sponsors
 ---
